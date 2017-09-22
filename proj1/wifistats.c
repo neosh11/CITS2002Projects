@@ -2,7 +2,7 @@
  CITS2002 Project 1 2017
  Name(s):             Neosh Sheikh , Cameron Wright
  Student number(s):   21959462 , 21958958
- Date:                date-of-submission
+ Date:                22/09/2017
  */
 
 #include <sys/wait.h>
@@ -16,15 +16,13 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAXMAC 500
-#define MAXSTR 50
-#define MAXOUI 2500
+#define MAXSTR 91
 #define MACLEN 18
 
 
 /************************************
-*            LINKED-LIST            *
-*************************************/
+ *            LINKED-LIST            *
+ *************************************/
 
 /*Struct representing a linked list
  *of Mac Ids and the number of packets
@@ -36,29 +34,24 @@
 typedef struct node
 {
     int total;
-    char id[18];
+    char id[MACLEN];
     struct node *ptr;
 } macNode;
 
 //Identifier nodes for reference
 macNode *front,*rear,*temp,*front1;
 
-
 //initialize the list
 void initializeList(void);
-
 
 //enques a node on to the list
 void enqueue(int total, char * id);
 
-
 //adds total to name, if name already exists
 void update(int total, char * id);
 
-
 //Adds all the nodes to the stream
 void display(FILE * stream);
-
 
 //Frees used memory
 void delete(void);
@@ -66,22 +59,63 @@ void delete(void);
 
 
 
-//Part1 of the project
+//************Part1 of the project************
+
+/**
+ * the function for part 1- the file is scanned and data extracted and functions are called to organize it
+ * 
+ * @param file the file to read from
+ * @param type information on whether the file is using the transmitter or receiver MAC
+ * @param stream the information to be displayed
+ */
 int part1(FILE *file, char type, FILE * stream);
+/*************************************/
 
-//Part2 of the project
+
+
+//************Part2 of the project************
+
+/**
+ * the function for part 2- the file is scanned and data extracted and functions are called to organize it
+ * 
+ * @param file the first file to read from
+ * @param file2 the second file to read from
+ * @param type information on whether the file is using the transmitter or receiver MAC
+ * @param stream the information to be displayed
+ */
 int part2(FILE *file, FILE *file2, char type, FILE * stream);
+
+/**
+ * this method checks if the id given is in the file
+ * 
+ * @param id the id to be searched
+ * @param file the file being read
+ * @param retStr the string that is returned
+ * @return true if the mac id was found, false otherwise
+ */
 bool findMacNameInFile(char id[9], FILE * file, char retStr[MAXSTR]);
+
+/**
+ * finds the data in the file and organizes it into the output
+ * 
+ * @param reference the data file containing references to vendors
+ * @param stream file to be used
+ */
 void run(FILE *reference, FILE * stream);
-
-
-
+/*************************************/
 
 int main(int argc, char *argv[])
 {
-    
+	
+	//If incorrect number of arguments, exit
+	if (argc != 3 && argc != 4)
+	{
+		return 0;
+	}
+			
+    //Here the preprocessing is done in a child process and it's data is sent to the parent
     int pipes[2];
-    pid_t pid;
+    pid_t pid = 0;
     FILE *stream;
     
     int stat;
@@ -91,40 +125,36 @@ int main(int argc, char *argv[])
     
     
     switch(fork()){
-            
-        case -1:
+         
+        case -1: //failure
             fprintf(stderr, "error forking\n");
             break;
             
-        case 0:
+        case 0: //In child 
             stream = fdopen(pipes[1], "w");
             
             if(stream == NULL)
-                fprintf(stderr, "could not create file streami\n");
+                fprintf(stderr, "could not create file stream\n");
             
             if(close(pipes[0]) == -1)
-                printf("err closing read end pid\n");
+                printf("error closing read end of pipe\n");
             
-            
-            if (argc != 3 && argc != 4)
-            {
-                return 0;
-            }
-            
-            char type = argv[1][0]; //Second argument
+            char type = argv[1][0]; //First argument
             FILE *file;             //File to be opened
             
             
             if ((file = fopen(argv[2], "r")) == NULL)
             {
-                //ERROR
+                fprintf(stderr, "error while opening file\n");
             }
             
+			//If 2 arguments supplied, Run part 1
             if (argc == 3)
             {
                 part1(file, type, stream);
             }
             
+			//If 3 arguments supplied, Run part 2
             else if (argc == 4)
             {
                 FILE *file2;
@@ -132,11 +162,12 @@ int main(int argc, char *argv[])
                 
                 if ((file2 = fopen(argv[3], "r")) == NULL)
                 {
-                    //ERROR
+                	fprintf(stderr, "error while opening file\n");
                 }
                 part2(file, file2, type, stream);
                 fclose(file2);
             }
+			
             fclose(file);
             
             if(fclose(stream) == EOF)
@@ -144,44 +175,45 @@ int main(int argc, char *argv[])
             break;
             
         default:
+			//Wait for child to finish preprocessing
             wait(&stat);
             
+			//Get input from child
             dup2(pipes[0], STDIN_FILENO);
             
             if(close(pipes[1]) == -1)
-                fprintf(stderr,"err closing write end pid=%d\n", pid);
+                fprintf(stderr,"error closing write end of pipe, pid = %d\n", pid);
             
             if(close(pipes[0]) == -1)
-                fprintf(stderr,"err closing write end pid=%d\n", pid);
+                fprintf(stderr,"error closing write end of pipe, pid = %d\n", pid);
+			
+			//Execute sorting depending on type
             if (argc == 3)
             {
-                execv("/usr/bin/sort", (char*[]){"sort", "-k2,1nr", "-k1,2", "-t", "\t", (char*)NULL});
+                execv("/usr/bin/sort", (char*[]){"sort", "-k2,1nr", "-k1,2f", "-t", "\t", (char*)NULL});
             }
             
             else if (argc == 4)
             {
-                execv("/usr/bin/sort", (char*[]){"sort", "-k3,1nr", "-k2,2", "-t", "\t" , (char*)NULL});
+                execv("/usr/bin/sort", (char*[]){"sort", "-k3,1nr", "-k2,2f", "-t", "\t" , (char*)NULL});
             }
-            exit(EXIT_FAILURE);
-            
-            break;
-            
-            
+            break; 
     }
     
-    //SUCCESS
+    //SUCCESS (Exit's both parent and child)
     return 0;
 }
-
+/*************************************/
 
 /***********************************************************
  
  Functions used in the program
  
  ************************************************************/
+
 bool findMacNameInFile(char id[9], FILE * file, char retStr[MAXSTR])
 {
-    
+    //Search through files containing vendor names for name
     rewind(file);
     char currID[9];
     char currStr[MAXSTR];
@@ -227,16 +259,19 @@ bool findMacNameInFile(char id[9], FILE * file, char retStr[MAXSTR])
 void run(FILE *reference, FILE *stream)
 {
     
-    int unknown=0;
+    int unknown= 0;
     bool found;
     char str[MAXSTR];
-
+    
     front1 = front;
+    
     if ((front1 == NULL) && (rear == NULL))
     {
-        printf("Queue is empty");
+		//No elements = exit
         return;
     }
+	
+	//look at each element in list, if vendor name found print line else add totals of unknown
     while (front1 != rear)
     {
         found = findMacNameInFile(front1->id, reference, str);
@@ -263,10 +298,10 @@ void run(FILE *reference, FILE *stream)
             unknown += front1->total;
         }
     }
-    
-    fprintf(stream, "??:??:??\tUNKNOWN-VENDOR\t%d\n", unknown);
+	//Add unknowns to stream
+    if(unknown != 0)
+        fprintf(stream, "??:??:??\tUNKNOWN-VENDOR\t%d\n", unknown);
 }
-
 
 int part1(FILE *file, char type, FILE *stream)
 {
@@ -276,7 +311,7 @@ int part1(FILE *file, char type, FILE *stream)
     char *useData;      //Pointer to set up the data in use
     int len;            //len in bytes of packe
     
-    
+    //choose the data to be used
     if (type == 'r')
         useData = rData;
     else if (type == 't')
@@ -285,12 +320,18 @@ int part1(FILE *file, char type, FILE *stream)
         return -1;
     
     initializeList();
-    while (fscanf(file, "%f\t%s\t%s\t%i\n", &time, tData, rData, &len) != EOF)
+	
+	//Add all data into the linked list
+    while (fscanf(file, "%f\t%s\t%s\t%i\n", &time, tData, rData, &len) == 4)
     {
-        update(len, useData);
+		if(strcmp(tData,"ff:ff:ff:ff:ff:ff") != 0 && strcmp(rData,"ff:ff:ff:ff:ff:ff") != 0)
+            update(len, useData);
     }
     
+	//Put all data onto the stream
     display(stream);
+	
+	delete();
     return 0;
 }
 
@@ -303,8 +344,8 @@ int part2(FILE *file, FILE *file2, char type, FILE *stream)
     char *useData;      //Pointer to set up the data in use
     int len;            //len in bytes of packe
     
-    char buffer[500];
-    
+	
+	//Choose the data to be used
     if (type == 'r')
         useData = rData;
     else if (type == 't')
@@ -313,17 +354,21 @@ int part2(FILE *file, FILE *file2, char type, FILE *stream)
         return -1;
     
     initializeList();
+	
+	//Add all data to linked list 
     while (fscanf(file, "%f\t%s\t%s\t%i\n", &time, tData, rData, &len) != EOF)
     {
         char shor[9];
         strncpy(shor, useData, 8);
         shor[8] = '\0';
         
-        update(len, shor);
+        if(strcmp(tData,"ff:ff:ff:ff:ff:ff") != 0 && strcmp(rData,"ff:ff:ff:ff:ff:ff"))
+            update(len, shor);
     }
+	//Find vendor names
     run(file2, stream);
-
-    
+	
+    delete();
     return 0;
 }
 
@@ -331,6 +376,12 @@ int part2(FILE *file, FILE *file2, char type, FILE *stream)
 //LINKEDLIST
 //***********************************
 
+/*
+ * standard enqueue function for a linked list- adds an item to the back of the queue
+ * 
+ * @param total number of packets to be added to ID
+ * @param id the mac id to add
+ */
 void enqueue(int total, char * id)
 {
     if (rear == NULL)
@@ -352,6 +403,13 @@ void enqueue(int total, char * id)
     }
     
 }
+
+/*
+ * adds total to name, if name already exists
+ * 
+ * @param total number of packets to be added to ID
+ * @param id the mac id to add
+ */
 void update(int total, char * id){
     
     front1 = front;
@@ -379,6 +437,11 @@ void update(int total, char * id){
     enqueue(total,id);
     
 }
+
+/*
+ * adds all the nodes to the stream
+ * @param stream the file where it's added
+ */
 void display(FILE * stream)
 {
     
@@ -386,7 +449,6 @@ void display(FILE * stream)
     
     if ((front1 == NULL) && (rear == NULL))
     {
-        fprintf(stream, "Queue is empty");
         return;
     }
     while (front1 != rear)
@@ -398,30 +460,36 @@ void display(FILE * stream)
         fprintf(stream, "%s\t%d\n",front1->id, front1->total);
     
 }
+
+/*
+ * initialization of the linked list
+ */
 void initializeList(void)
 {
     
     front = rear = NULL;
 }
 
-
+/*
+ * deletes entire linked list to free memory
+ */
 void delete(void)
 {
-
+    
     front1 = front;
     
-       if ((front1 == NULL) && (rear == NULL))
-       {
-           return;
-       }
-       while (front1 != rear)
-       {
-           macNode * temp = front1->ptr;
-           free(front1);
-           front1 = temp;
-       }
-       if (front1 == rear)
-       {
-           free(front1);
-       }
+    if ((front1 == NULL) && (rear == NULL))
+    {
+        return;
+    }
+    while (front1 != rear)
+    {
+        macNode * temp = front1->ptr;
+        free(front1); //Free memory 
+        front1 = temp;
+    }
+    if (front1 == rear)
+    {
+        free(front1);
+    }
 }
