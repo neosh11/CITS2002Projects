@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     
     char * valuePath = strtok(PATH, ":");
     enqueue(valuePath);
-    while( (valuePath = strtok(NULL, ':')) != NULL )
+    while( (valuePath = strtok(NULL, ":")) != NULL )
     {
         enqueue(valuePath);
     }

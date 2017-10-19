@@ -33,7 +33,7 @@ void display(void)
     temp = front;
     while(temp != NULL)
     {
-        printfln("%s", temp->path);
+        printf("%s\n", temp->path);
         temp = temp->ptr;
     }
 }
