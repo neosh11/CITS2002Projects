@@ -50,6 +50,18 @@ void delete(void)
     free(temp);
 }
 
+void resetHead(void)
+{
+	temp = front;
+}
+void next(void)
+{
+	if(temp != NULL)
+	{
+		temp = temp->ptr;
+	}
+}
+
 char **argumentsArray(int size,char **array)
 {
 	char **args = calloc(size, size*(sizeof(char*))+1);

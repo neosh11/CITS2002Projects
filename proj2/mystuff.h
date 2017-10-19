@@ -23,7 +23,11 @@ typedef struct node
 extern PathList *front;
 extern PathList *temp;
 
-void initializeList(void);
-void enqueue(char * paths);
-void display(void);
-void delete(void);
+extern void initializeList(void);
+extern void enqueue(char * paths);
+extern void delete(void);
+
+extern void resetHead(void);
+extern void next(void);
+
+extern void display(void);//for debugging

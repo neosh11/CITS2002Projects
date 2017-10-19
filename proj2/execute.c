@@ -10,6 +10,7 @@
 
 // -------------------------------------------------------------------
 
+int pathCommands(char * path, SHELLCMD *t);
 int basicCommands(SHELLCMD *t);
 
 
@@ -26,10 +27,66 @@ int execute_shellcmd(SHELLCMD *t)
         exitstatus = EXIT_FAILURE;
     }
     else
-    { // normal, exit commands
-        exitstatus = basicCommands(t);
+    {
+        if(strchr(t->argv[0], '/') == NULL)
+        {
+            resetHead();
+            while(temp != NULL)
+            {
+                exitstatus = pathCommands(temp->path, t);
+                next();
+                if(exitstatus == EXIT_SUCCESS)
+                    break;
+            }            
+        }
+        else
+        {
+            exitstatus = basicCommands(temp->path, t);
+        }
+
+        
     }
     return exitstatus;
+}
+
+int pathCommands(char * path, SHELLCMD *t)
+{
+    int status;
+    switch (fork())
+    {
+
+    case -1:
+    {
+
+        status = EXIT_FAILURE;
+        break;
+    }
+
+    case 0:
+    {
+        
+        char *location = locationCommand(path, t->argv[0]);
+        struct stat stat_buffer;
+
+        if (stat(location, &stat_buffer) != 0)
+        {
+            status = EXIT_FAILURE;
+        }
+        else if (S_ISREG(stat_buffer.st_mode))
+        {
+            execv(location, argumentsArray(t->argc, t->argv));
+        }
+
+        status = EXIT_SUCCESS;
+        break;
+    }
+    default:
+    {
+        wait(&status);
+        break;
+    }
+    }
+    return status;
 }
 
 int basicCommands(SHELLCMD *t)
@@ -46,28 +103,18 @@ int basicCommands(SHELLCMD *t)
     }
 
     case 0:
-
     {
-        char *location1 = locationCommand("/bin/", t->argv[0]);
-        char *location2 = locationCommand("/usr/bin/", t->argv[0]);
+        
+        char *location = t->argv[0];
+        struct stat stat_buffer;
 
-        struct stat stat_buffer1;
-        struct stat stat_buffer2;
-
-        if (stat(location1, &stat_buffer1) != 0)
+        if (stat(location, &stat_buffer) != 0)
         {
-            if (stat(location2, &stat_buffer2) != 0)
-            {
-                status = EXIT_FAILURE;
-            }
-            else if (S_ISREG(stat_buffer2.st_mode))
-            {
-                execv(location2, argumentsArray(t->argc, t->argv));
-            }
+            status = EXIT_FAILURE;
         }
-        else if (S_ISREG(stat_buffer1.st_mode))
+        else if (S_ISREG(stat_buffer.st_mode))
         {
-            execv(location1, argumentsArray(t->argc, t->argv));
+            execv(location, argumentsArray(t->argc, t->argv));
         }
 
         status = EXIT_SUCCESS;
@@ -76,13 +123,6 @@ int basicCommands(SHELLCMD *t)
     default:
     {
         wait(&status);
-        char ** XX = argumentsArray(t->argc, t->argv);
-        printf("%d", t->argc);
-        foreach(i, 0, (t->argc)-1)
-        {
-            printf("%s ", XX[i]);
-        }
-        printf("\n");
         break;
     }
     }
