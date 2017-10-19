@@ -24,8 +24,8 @@ int execute_shellcmd(SHELLCMD *t)
     else {				// normal, exit commands
 
 
-        char *location1 = locationCommand("/bin/"t->argv[0]);
-        char *location2 = locationCommand("/usr/bin/"t->argv[0]);
+        char *location1 = locationCommand("/bin/", t->argv[0]);
+        char *location2 = locationCommand("/usr/bin/", t->argv[0]);
 
         struct stat stat_buffer1;
         struct stat stat_buffer2;
