@@ -71,7 +71,7 @@ int execute_shellcmd(SHELLCMD *t)
             break;
         }
         }
-
-        return exitstatus;
     }
+    
+    return exitstatus;
 }
