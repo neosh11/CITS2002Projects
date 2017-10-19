@@ -23,12 +23,17 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else {				// normal, exit commands
 
-    printf("%d\n",t->argc);
+    // printf("%d\n",t->argc);
 
-    foreach(i, 0, t->argc)
-    {
-        printf("%s\n", t->argv[i]);
-    }
+    // foreach(i, 0, t->argc)
+    // {
+    //     printf("%s\n", t->argv[i]);
+    // }
+    
+    char *location = calloc(100, sizeof(char));
+    strcpy(location, "bin/");
+    strcpy(location, t->argv[0]);
+    execv(location, t->argv[0], NULL)
 
 	exitstatus	= EXIT_SUCCESS;
     }

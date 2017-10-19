@@ -4,3 +4,4 @@
 #define eval(X) X
 
 extern void lala(int x);
+extern char **A(...);
