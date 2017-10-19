@@ -16,38 +16,53 @@
 
 int execute_shellcmd(SHELLCMD *t)
 {
-    int  exitstatus;
+    int exitstatus;
 
-    if(t == NULL) {			// hmmmm, that's a problem
-	exitstatus	= EXIT_FAILURE;
+    if (t == NULL)
+    { // hmmmm, that's a problem
+        exitstatus = EXIT_FAILURE;
     }
-    else {				// normal, exit commands
+    else
+    { // normal, exit commands
 
+        int stat;
 
-        char *location1 = locationCommand("/bin/", t->argv[0]);
-        char *location2 = locationCommand("/usr/bin/", t->argv[0]);
-
-        struct stat stat_buffer1;
-        struct stat stat_buffer2;
-
-        if(stat(location1, &stat_buffer1) != 0)
+        switch (fork())
         {
-            if(stat(location2, &stat_buffer2) != 0)
+
+        case -1:
+            //TODO failure
+            break;
+
+        case 0:
+            char *location1 = locationCommand("/bin/", t->argv[0]);
+            char *location2 = locationCommand("/usr/bin/", t->argv[0]);
+
+            struct stat stat_buffer1;
+            struct stat stat_buffer2;
+
+            if (stat(location1, &stat_buffer1) != 0)
             {
-                 //doesn't exist
+                if (stat(location2, &stat_buffer2) != 0)
+                {
+                    //doesn't exist
+                }
+                else if (S_ISREG(stat_buffer2.st_mode))
+                {
+                    execv(location2, argumentsArray(t->argc, t->argv));
+                }
             }
-            else if(S_ISREG( stat_buffer2.st_mode ))
+            else if (S_ISREG(stat_buffer1.st_mode))
             {
-                execv(location2, argumentsArray(t->argc,t->argv));
+                execv(location1, argumentsArray(t->argc, t->argv));
             }
+
+            exitstatus = EXIT_SUCCESS;
+            break;
+        default:
+            wait(&stat);
+            break;
         }
-        else if(S_ISREG( stat_buffer1.st_mode ))
-        {
-            execv(location1, argumentsArray(t->argc,t->argv));
-        }      
-        
-        exitstatus	= EXIT_SUCCESS;
-    }
 
-    return exitstatus;
-}
+        return exitstatus;
+    }

@@ -4,6 +4,7 @@
 #include  <sys/param.h>
 #include  <dirent.h>
 #include  <unistd.h>
+#include <sys/wait.h>
 
 #define foreach(i,x,y) for(int i = x; i < y; i++)
 #define eval(X) X
