@@ -25,7 +25,7 @@ int execute_shellcmd(SHELLCMD *t)
     else
     { // normal, exit commands
 
-        int stat;
+        int status;
 
         switch (fork())
         {
@@ -67,7 +67,7 @@ int execute_shellcmd(SHELLCMD *t)
         }
         default:
         {
-            wait(&stat);
+            wait(&status);
             break;
         }
         }
