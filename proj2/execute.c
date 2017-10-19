@@ -13,6 +13,7 @@
 int basicExecution(SHELLCMD *t);
 int pathCommands(char * path, SHELLCMD *t);
 int basicCommands(SHELLCMD *t);
+int changeDirectory(char * dir)s
 
 //Made global to get the exit status
 int exitstatus;
@@ -42,7 +43,7 @@ int basicExecution(SHELLCMD *t)
 
     if(strcmp(t->argv[0], "cd") == 0)
     {
-        if(argc >1)
+        if(t->argc >1)
         {
             status = changeDirectory(argv[1]);
         }
@@ -53,7 +54,7 @@ int basicExecution(SHELLCMD *t)
     }
     else if(strcmp(t->argv[0], "exit") == 0)
     {
-        if(argc >1)
+        if(t->argc >1)
         {
             exit(argv[1]);
         }
