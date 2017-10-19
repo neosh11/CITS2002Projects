@@ -30,9 +30,19 @@ int execute_shellcmd(SHELLCMD *t)
     {
         if(strchr(t->argv[0], '/') == NULL)
         {
+
             resetHead();
             while(temp != NULL)
             {
+                char *location = locationCommand(path, t->argv[0]);
+                struct stat stat_buffer;
+
+                if (stat(location, &stat_buffer) != 0)
+                {
+                    printf("%s doesn't exist", location);
+                    continue;
+                }
+
                 exitstatus = pathCommands(temp->path, t);
                 next();
                 if(exitstatus == EXIT_SUCCESS)
