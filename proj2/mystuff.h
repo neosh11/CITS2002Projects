@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 
 #define foreach(i,x,y) for(int i = x; i < y; i++)
+#define check(X) printf("CHECK %d\n", X);
 
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);

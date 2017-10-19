@@ -15,12 +15,16 @@ int main(int argc, char *argv[])
     argc--;				// skip 1st command-line argument
     argv++;
 
+    check(1);
 
     //STORE ALL PATH VARIABLES IN A LIST
     initializeList();
     
+    check(2);
     char * valuePath = strtok(PATH, ":");
+    check(3);
     enqueue(valuePath);
+    check(4);
     while( (valuePath = strtok(NULL, ":")) != NULL )
     {
         enqueue(valuePath);
