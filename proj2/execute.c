@@ -31,10 +31,15 @@ int execute_shellcmd(SHELLCMD *t)
         {
 
         case -1:
-            //TODO failure
+        {
+
+            exitstatus = EXIT_FAILURE;
             break;
+        }
 
         case 0:
+
+        {
             char *location1 = locationCommand("/bin/", t->argv[0]);
             char *location2 = locationCommand("/usr/bin/", t->argv[0]);
 
@@ -59,10 +64,14 @@ int execute_shellcmd(SHELLCMD *t)
 
             exitstatus = EXIT_SUCCESS;
             break;
+        }
         default:
+        {
             wait(&stat);
             break;
+        }
         }
 
         return exitstatus;
     }
+}
