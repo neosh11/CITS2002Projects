@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     check(2);
     char * valuePath = strtok(PATH, ":");
     check(3);
+    printS(valuePath);
     enqueue(valuePath);
     check(4);
     while( (valuePath = strtok(NULL, ":")) != NULL )
