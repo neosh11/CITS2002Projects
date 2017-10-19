@@ -23,20 +23,30 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else {				// normal, exit commands
 
-    // printf("%d\n",t->argc);
 
-    // foreach(i, 0, t->argc)
-    // {
-    //     printf("%s\n", t->argv[i]);
-    // }
-    
-    char *location = calloc(100, sizeof(char));
-    strcpy(location, "/bin/");
-    strcat(location, t->argv[0]);
+        char *location1 = locationCommand("/bin/"t->argv[0]);
+        char *location2 = locationCommand("/usr/bin/"t->argv[0]);
 
-    execv(location, argumentsArray(t->argc,t->argv));
+        struct stat stat_buffer1;
+        struct stat stat_buffer2;
 
-	exitstatus	= EXIT_SUCCESS;
+        if(stat(location1, &stat_buffer1) != 0)
+        {
+            if(stat(location2, &stat_buffer2) != 0)
+            {
+                 //doesn't exist
+            }
+            else if(S_ISREG( stat_buffer2.st_mode ))
+            {
+                execv(location2, argumentsArray(t->argc,t->argv));
+            }
+        }
+        else if(S_ISREG( stat_buffer1.st_mode ))
+        {
+            execv(location1, argumentsArray(t->argc,t->argv));
+        }      
+        
+        exitstatus	= EXIT_SUCCESS;
     }
 
     return exitstatus;

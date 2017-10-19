@@ -5,3 +5,4 @@
 #define progArgs(...) {__VA_ARGS__, NULL} 
 
 extern char **argumentsArray(int size,char **array);
+extern char *locationCommand(char* loc, char * command);
