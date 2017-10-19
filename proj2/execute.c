@@ -10,7 +10,7 @@
 
 // -------------------------------------------------------------------
 
-int pathCommands(char * path, SHELLCMD *t);
+int basicCommands(SHELLCMD *t);
 
 
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
@@ -27,13 +27,12 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else
     { // normal, exit commands
-        
         exitstatus = basicCommands(t);
     }
     return exitstatus;
 }
 
-int pathCommands(char * path, char SHELLCMD *t)
+int basicCommands(SHELLCMD *t)
 {
     int status;
     switch (fork())
@@ -49,18 +48,26 @@ int pathCommands(char * path, char SHELLCMD *t)
     case 0:
 
     {
-        char *location = locationCommand(path, t->argv[0]);
+        char *location1 = locationCommand("/bin/", t->argv[0]);
+        char *location2 = locationCommand("/usr/bin/", t->argv[0]);
 
-        struct stat stat_buffer;
+        struct stat stat_buffer1;
+        struct stat stat_buffer2;
 
-        if (stat(location, &stat_buffer) != 0)
+        if (stat(location1, &stat_buffer1) != 0)
         {
-            //not found
-            status = EXIT_FAILURE;
+            if (stat(location2, &stat_buffer2) != 0)
+            {
+                status = EXIT_FAILURE;
+            }
+            else if (S_ISREG(stat_buffer2.st_mode))
+            {
+                execv(location2, argumentsArray(t->argc, t->argv));
+            }
         }
-        else if (S_ISREG(stat_buffer.st_mode))
+        else if (S_ISREG(stat_buffer1.st_mode))
         {
-            execv(location, argumentsArray(t->argc, t->argv));
+            execv(location1, argumentsArray(t->argc, t->argv));
         }
 
         status = EXIT_SUCCESS;
