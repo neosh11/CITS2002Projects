@@ -1,6 +1,6 @@
 PROJECT = shell
-HEADER = myshell.h
-OBJ = execute.o globals.o myshell.o parser.o
+HEADER = myshell.h mystuff.h
+OBJ = execute.o globals.o myshell.o parser.o mystuff.o
 
 C99 = cc -std=c99
 FLAGS = -Wall -pedantic -Werror 
