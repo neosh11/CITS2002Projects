@@ -4,5 +4,4 @@
 #define eval(X) X
 #define progArgs(...) {__VA_ARGS__, NULL} 
 
-extern void lala(int x);
-extern char **argumentsArray(int size,char * array[]);
+extern char **argumentsArray(int size,char **array);
