@@ -37,7 +37,19 @@ int execute_shellcmd(SHELLCMD *t)
 int basicExecution(SHELLCMD *t)
 {
     int status;
-    if(strchr(t->argv[0], '/') == NULL)
+
+    if(strcmp(t->argv[0], "cd") == 0)
+    {
+        if(argc >1)
+        {
+            status = changeDirectory(argv[1]);
+        }
+        else
+        {
+            status = changeDirectory(NULL);
+        }
+    }
+    else if(strchr(t->argv[0], '/') == NULL)
     {
 
         resetHead();
@@ -140,6 +152,20 @@ int basicCommands(SHELLCMD *t)
         wait(&status);
         break;
     }
+    }
+    return status;
+}
+
+int changeDirectory(char * dir)
+{
+    int status;
+    if(dir != NULL)
+    {
+        status = chdir(dir);
+    }
+    else
+    {
+        status = chdir(HOME);
     }
     return status;
 }
