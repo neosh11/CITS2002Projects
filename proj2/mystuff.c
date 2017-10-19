@@ -6,7 +6,7 @@ char **argumentsArray(int size,char **array)
 	char **args = calloc(size, size*(sizeof(char*)));
 	
 	foreach(i, 1, size)
-		args[i] = &array[i][0];
+		args[i-1] = &array[i][0];
 		
 	return args;
 }
