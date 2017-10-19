@@ -41,7 +41,7 @@ int execute_shellcmd(SHELLCMD *t)
         }
         else
         {
-            exitstatus = basicCommands(temp->path, t);
+            exitstatus = basicCommands(t);
         }
 
         
