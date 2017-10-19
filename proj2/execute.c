@@ -29,7 +29,7 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else
     {
-        exitstatus = basicExecution(SHELLCMD);
+        exitstatus = basicExecution(t);
     }
     return exitstatus;
 }
