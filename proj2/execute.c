@@ -62,7 +62,7 @@ int basicCommands(SHELLCMD *t)
             }
             else if (S_ISREG(stat_buffer2.st_mode))
             {
-                char ** XX = argumentsArray(t->argc, t->argv)
+                char ** XX = argumentsArray(t->argc, t->argv);
                 foreach(i, 0, argc-1)
                 {
                     printf("%s ", XX[i]);
