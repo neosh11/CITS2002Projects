@@ -10,6 +10,7 @@
 
 // -------------------------------------------------------------------
 
+int basicExecution(SHELLCMD *t);
 int pathCommands(char * path, SHELLCMD *t);
 int basicCommands(SHELLCMD *t);
 
