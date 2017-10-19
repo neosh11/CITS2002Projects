@@ -1,4 +1,5 @@
 #include "myshell.h"
+#include "mystuff.h"
 
 /*
    CITS2002 Project 2 2017
@@ -21,6 +22,14 @@ int execute_shellcmd(SHELLCMD *t)
 	exitstatus	= EXIT_FAILURE;
     }
     else {				// normal, exit commands
+
+    printfln("%d",t->argc);
+
+    foreach(i, 0, t->argc)
+    {
+        printfln("%s", t->argv[i]);
+    }
+    
 	exitstatus	= EXIT_SUCCESS;
     }
 
