@@ -68,10 +68,11 @@ int execute_shellcmd(SHELLCMD *t)
         default:
         {
             wait(&status);
+            exitstatus = status;
             break;
         }
         }
     }
-    
+
     return exitstatus;
 }
