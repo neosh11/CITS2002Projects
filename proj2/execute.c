@@ -23,13 +23,13 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else {				// normal, exit commands
 
-    printfln("%d",t->argc);
+    printf"%d\n",t->argc);
 
     foreach(i, 0, t->argc)
     {
-        printfln("%s", t->argv[i]);
+        printf("%s\n", t->argv[i]);
     }
-    
+
 	exitstatus	= EXIT_SUCCESS;
     }
 
