@@ -13,10 +13,10 @@
 int basicExecution(SHELLCMD *t);
 int pathCommands(char * path, SHELLCMD *t);
 int basicCommands(SHELLCMD *t);
-int changeDirectory(char * dir)s
+int changeDirectory(char * dir);
 
 //Made global to get the exit status
-int exitstatus;
+int exitstatus=0;
 
 
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
@@ -56,7 +56,7 @@ int basicExecution(SHELLCMD *t)
     {
         if(t->argc >1)
         {
-            exit(argv[1]);
+            exit(t->argv[1]);
         }
         else
         {
