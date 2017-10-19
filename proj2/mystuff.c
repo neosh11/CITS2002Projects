@@ -76,6 +76,7 @@ char *locationCommand(char* loc, char * command)
 {
 	char *location = calloc(100, sizeof(char));
 	strcpy(location, loc);
+	strcat(location, "/");
 	strcat(location, command);
 	return location;
 }

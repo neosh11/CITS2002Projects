@@ -34,12 +34,13 @@ int execute_shellcmd(SHELLCMD *t)
             resetHead();
             while(temp != NULL)
             {
-                char *location = locationCommand(path, t->argv[0]);
+                char *location = locationCommand(temp->path, t->argv[0]);
                 struct stat stat_buffer;
 
                 if (stat(location, &stat_buffer) != 0)
                 {
                     printf("%s doesn't exist", location);
+                    next();
                     continue;
                 }
 
