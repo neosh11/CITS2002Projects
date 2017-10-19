@@ -29,11 +29,8 @@ int execute_shellcmd(SHELLCMD *t)
     // {
     //     printf("%s\n", t->argv[i]);
     // }
-    
-    char *location = calloc(100, sizeof(char));
-    strcpy(location, "bin/");
-    strcpy(location, t->argv[0]);
-    execv(location, t->argv[0], NULL)
+
+    execv(location, argumentsArray(t->argv));
 
 	exitstatus	= EXIT_SUCCESS;
     }
