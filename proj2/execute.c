@@ -11,7 +11,6 @@
 // -------------------------------------------------------------------
 
 int pathCommands(char * path, SHELLCMD *t);
-//int basicCommands(SHELLCMD *t);
 
 
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
@@ -28,17 +27,8 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else
     { // normal, exit commands
-
-        if(strchr(t->argv[0], '/') == NULL)
-        {
-            exitstatus = pathCommands("/usr/bin/", t);
-        }
-        else
-        {
-
-        }
-
         
+        exitstatus = basicCommands(t);
     }
     return exitstatus;
 }
