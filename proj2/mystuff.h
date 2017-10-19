@@ -7,8 +7,21 @@
 #include <sys/wait.h>
 
 #define foreach(i,x,y) for(int i = x; i < y; i++)
-#define eval(X) X
-#define progArgs(...) {__VA_ARGS__, NULL} 
 
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);
+
+typedef struct node
+{
+    char * path;
+    struct node *ptr;
+} PathList;
+
+//Identifier nodes for reference
+extern PathList *front;
+extern PathList *temp;
+
+void initializeList(void);
+void enqueue(char * paths);
+void display(void);
+void delete(void);

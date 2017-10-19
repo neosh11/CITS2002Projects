@@ -1,4 +1,5 @@
 #include "myshell.h"
+#include "mystuff.h"
 
 /*
    CITS2002 Project 2 2017
@@ -13,6 +14,19 @@ int main(int argc, char *argv[])
     argv0	= (argv0 = strrchr(argv[0],'/')) ? argv0+1 : argv[0];
     argc--;				// skip 1st command-line argument
     argv++;
+
+
+    //STORE ALL PATH VARIABLES IN A LIST
+    initializeList();
+    
+    char * valuePath = strtok(PATH, ":");
+    enqueue(valuePath);
+    while( (valuePath = strtok(NULL, ':')) != NULL )
+    {
+        enqueue(valuePath);
+    }
+    display();
+
 
 //  INITIALIZE THE THREE INTERNAL VARIABLES
     HOME	= getenv("HOME");
