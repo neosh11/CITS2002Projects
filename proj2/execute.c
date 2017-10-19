@@ -31,7 +31,7 @@ int execute_shellcmd(SHELLCMD *t)
 
         if(strchr(t->argv[0], '/') == NULL)
         {
-            exitstatus = pathCommands(t->argv[0], t);
+            exitstatus = pathCommands("/usr/bin/", t);
         }
         else
         {
