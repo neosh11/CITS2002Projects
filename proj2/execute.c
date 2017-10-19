@@ -28,38 +28,41 @@ int execute_shellcmd(SHELLCMD *t)
     }
     else
     {
-        if(strchr(t->argv[0], '/') == NULL)
-        {
-
-            resetHead();
-            while(temp != NULL)
-            {
-                char *location = locationCommand(temp->path, t->argv[0]);
-                struct stat stat_buffer;
-
-                if (stat(location, &stat_buffer) != 0)
-                {
-                    printf("%s doesn't exist", location);
-                    next();
-                    continue;
-                }
-
-                exitstatus = pathCommands(temp->path, t);
-                next();
-                if(exitstatus == EXIT_SUCCESS)
-                    break;
-            }            
-        }
-        else
-        {
-            exitstatus = basicCommands(t);
-        }
-
-        
+        exitstatus = basicExecution(SHELLCMD);
     }
     return exitstatus;
 }
 
+int basicExecution(SHELLCMD *t)
+{
+    int status;
+    if(strchr(t->argv[0], '/') == NULL)
+    {
+
+        resetHead();
+        while(temp != NULL)
+        {
+            char *location = locationCommand(temp->path, t->argv[0]);
+            struct stat stat_buffer;
+
+            if (stat(location, &stat_buffer) != 0)
+            {
+                next();
+                continue;
+            }
+
+            status = pathCommands(temp->path, t);
+            next();
+            if(status == EXIT_SUCCESS)
+                break;
+        }            
+    }
+    else
+    {
+        status = basicCommands(t);
+    }
+    return status;
+}
 int pathCommands(char * path, SHELLCMD *t)
 {
     int status;
