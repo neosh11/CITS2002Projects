@@ -66,6 +66,7 @@ int basicExecution(SHELLCMD *t)
     else if(strcmp(t->argv[0], "time") == 0)
     {
 
+        status = exitstatus;
         //Print time of the day to error stream!
     }
     else if(strchr(t->argv[0], '/') == NULL)
