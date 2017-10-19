@@ -10,6 +10,9 @@
 
 // -------------------------------------------------------------------
 
+int basicCommands(SHELLCMD *t);
+
+
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
 //  THAT IT HOLDS, RETURNING THE APPROPRIATE EXIT-STATUS.
 //  READ print_shellcmd0() IN globals.c TO SEE HOW TO TRAVERSE THE COMMAND-TREE
@@ -25,7 +28,7 @@ int execute_shellcmd(SHELLCMD *t)
     else
     { // normal, exit commands
         exitstatus = basicCommands(t);
-        
+
     }
 
     return exitstatus;
