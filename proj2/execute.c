@@ -14,6 +14,9 @@ int basicExecution(SHELLCMD *t);
 int pathCommands(char * path, SHELLCMD *t);
 int basicCommands(SHELLCMD *t);
 
+//Made global to get the exit status
+int exitstatus;
+
 
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
 //  THAT IT HOLDS, RETURNING THE APPROPRIATE EXIT-STATUS.
@@ -21,7 +24,6 @@ int basicCommands(SHELLCMD *t);
 
 int execute_shellcmd(SHELLCMD *t)
 {
-    int exitstatus;
 
     if (t == NULL)
     { // hmmmm, that's a problem
@@ -48,6 +50,22 @@ int basicExecution(SHELLCMD *t)
         {
             status = changeDirectory(NULL);
         }
+    }
+    else if(strcmp(t->argv[0], "exit") == 0)
+    {
+        if(argc >1)
+        {
+            exit(argv[1]);
+        }
+        else
+        {
+            exit(exitstatus);
+        }
+    }
+    else if(strcmp(t->argv[0], "time") == 0)
+    {
+
+        //Print time of the day to error stream!
     }
     else if(strchr(t->argv[0], '/') == NULL)
     {
