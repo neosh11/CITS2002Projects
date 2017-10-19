@@ -31,7 +31,7 @@ int execute_shellcmd(SHELLCMD *t)
     // }
     
     char *location = calloc(100, sizeof(char));
-    strcpy(location, "bin/");
+    strcpy(location, "/bin/");
     strcpy(location, t->argv[0]);
     execv(location, argumentsArray(t->argc,t->argv));
 
