@@ -45,7 +45,7 @@ int basicExecution(SHELLCMD *t)
     {
         if(t->argc >1)
         {
-            status = changeDirectory(argv[1]);
+            status = changeDirectory(t->argv[1]);
         }
         else
         {
@@ -56,7 +56,7 @@ int basicExecution(SHELLCMD *t)
     {
         if(t->argc >1)
         {
-            exit(t->argv[1]);
+            exit(atoi(t->argv[1]));
         }
         else
         {
