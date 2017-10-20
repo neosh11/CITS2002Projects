@@ -4,6 +4,7 @@
 PathList *front;
 PathList *temp;
 
+
 void initializeList(void)
 {
     front = NULL;

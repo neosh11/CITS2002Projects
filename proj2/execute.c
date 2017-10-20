@@ -118,6 +118,12 @@ int categoryExecute(SHELLCMD *t)
 
 int basicExecution(SHELLCMD *t)
 {
+    
+    
+    int saved_stdout = dup(1);
+    int saved_stdin = dup(0);
+    
+    
     int status;
     TIMEVAL startTime;
     TIMEVAL endTime;
@@ -127,8 +133,58 @@ int basicExecution(SHELLCMD *t)
     int cargc = t->argc;
     char ** cargv = t->argv;
     
+    if(t->infile != NULL)
+    {
+        printf("Going infile ");
+        int fin = open(t->infile, O_RDONLY);
+        
+        if(fin == -1)
+        {
+            //eroor
+            printf("Failure");
+        }
+        
+        dup2(fin, 0);
+        close(fin);
+    }
+    else
+    {
+        //nothing
+    }
     
     
+    if(t->outfile != NULL && t->append)
+    {
+        printf("Going outfile append");
+        int fap = open(t->outfile, O_WRONLY| O_APPEND);
+        if(fap == -1)
+        {
+            //eroor
+            printf("\n%s\n", t->outfile);
+            printf("Failure\n");
+        }
+        dup2(fap, 1);
+        close(fap);
+    }
+    else if(t->outfile != NULL)
+    {
+        printf("Going outfile");
+        int fout = open(t->outfile, O_WRONLY);
+        
+        if(fout == -1)
+        {
+            //eroor
+            printf("\n%s\n", t->outfile);
+            printf("Failure\n");
+        }
+        
+        dup2(fout, 1);
+        close(fout);
+    }
+    else
+    {
+        //nothing
+    }
     
     if(strcmp(cargv[0], "time") == 0)
     {
@@ -147,8 +203,10 @@ int basicExecution(SHELLCMD *t)
             cargv = &cargv[1];
         }
         status = exitstatus;
-        //fprintf(stderr, "%d", //time)
-        //Print time of the day to error stream!
+        
+        
+        dup2(saved_stdout, 1);
+        dup2(saved_stdin, 0);
     }
     
     
