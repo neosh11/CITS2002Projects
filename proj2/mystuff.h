@@ -5,6 +5,7 @@
 #include  <dirent.h>
 #include  <unistd.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 
 #define foreach(i,x,y) for(int i = x; i < y; i++)
 #define check(X) printf("CHECK %d\n", X);
@@ -19,6 +20,9 @@ typedef struct node
     struct node *ptr;
 } PathList;
 
+typedef struct timeval TIMEVAL;
+
+//************************************
 //Identifier nodes for reference
 extern PathList *front;
 extern PathList *temp;
@@ -31,3 +35,5 @@ extern void resetHead(void);
 extern void next(void);
 
 extern void display(void);//for debugging
+
+
