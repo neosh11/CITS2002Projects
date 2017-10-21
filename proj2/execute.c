@@ -49,126 +49,13 @@ int execute_shellcmd(SHELLCMD *t)
 
 int categoryExecute(SHELLCMD *t)
 {
-    int status = 1;
-    
-    CMDTYPE typeCmd = t->type;
-    
-    if(typeCmd == CMD_COMMAND)
-    {
-        status = basicExecution(t);
-    }
-    else if(typeCmd == CMD_SEMICOLON)
-    {
-        status = categoryExecute(t->left);
-        status = categoryExecute(t->right);
-    }
-    else if(typeCmd == CMD_AND)
-    {
-        status = categoryExecute(t->left);
-        if(status == EXIT_SUCCESS)
-        {
-            status = categoryExecute(t->right);
-        }
-    }
-    else if(typeCmd == CMD_OR)
-    {
-        
-        status = categoryExecute(t->left);
-        if(status == EXIT_FAILURE)
-        {
-            status = categoryExecute(t->right);
-        }
-    }
-    else if(typeCmd == CMD_SUBSHELL)
-    {
-        
-        switch(fork())
-        {
-            case -1:
-                //failure
-                break;
-            case 0:
-                exit( categoryExecute(t->left) );
-                // exit(1);
-                break;
-            default:
-                wait(&status);
-        }
-        
-    }
-    else if(typeCmd == CMD_PIPE)
-    {
 
-        int saved_stdout = dup(1);
-        int saved_stdin = dup(0);
-
-        int pipe1[2];
-        
-            if((pipe(pipe1)) != 0)
-            {
-                printf("FAIL");
-            }
-        
-            switch(fork())
-            {
-            case -1:
-        
-                printf("FAIL");
-            case 0:
-                close(pipe1[0]);
-                dup2(pipe1[1], 1);
-                close(pipe1[1]);
-                exit(categoryExecute(t->left));
-
-            default:
-                wait(&status);
-                close(pipe1[1]);
-                dup2(pipe1[0], 0);
-                close(pipe1[0]);
-                categoryExecute(t->right);
-            }
-
-            dup2(saved_stdout, 1);
-            dup2(saved_stdin, 0);
-
-            close(saved_stdout);
-            close(saved_stdin);
-
-    }
-    else if(typeCmd == CMD_BACKGROUND)
-    {
-        
-    }
-    else
-    {
-        //UH OH SOMETHING IS WRONG
-    }
-    return status;
-}
-
-
-//***********************************
-
-//Take Care of individual commands
-
-
-int basicExecution(SHELLCMD *t)
-{
-    
-    
+     
     int saved_stdout = dup(1);
     int saved_stdin = dup(0);
     
     
-    int status;
-    TIMEVAL startTime;
-    TIMEVAL endTime;
-    
-    showTime = false;
-    
-    int cargc = t->argc;
-    char ** cargv = t->argv;
-    
+
     if(t->infile != NULL)
     {
         //printf("Going infile ");
@@ -221,6 +108,124 @@ int basicExecution(SHELLCMD *t)
     {
         //nothing
     }
+
+
+    int status = 1;
+    
+    CMDTYPE typeCmd = t->type;
+    
+    if(typeCmd == CMD_COMMAND)
+    {
+        status = basicExecution(t);
+    }
+    else if(typeCmd == CMD_SEMICOLON)
+    {
+        status = categoryExecute(t->left);
+        status = categoryExecute(t->right);
+    }
+    else if(typeCmd == CMD_AND)
+    {
+        status = categoryExecute(t->left);
+        if(status == EXIT_SUCCESS)
+        {
+            status = categoryExecute(t->right);
+        }
+    }
+    else if(typeCmd == CMD_OR)
+    {
+        
+        status = categoryExecute(t->left);
+        if(status == EXIT_FAILURE)
+        {
+            status = categoryExecute(t->right);
+        }
+    }
+    else if(typeCmd == CMD_SUBSHELL)
+    {
+        
+        switch(fork())
+        {
+            case -1:
+                //failure
+                break;
+            case 0:
+                exit( categoryExecute(t->left) );
+                // exit(1);
+                break;
+            default:
+                wait(&status);
+        }
+        
+    }
+    else if(typeCmd == CMD_PIPE)
+    {
+        int pipe1[2];
+        
+            if((pipe(pipe1)) != 0)
+            {
+                printf("FAIL");
+            }
+        
+            switch(fork())
+            {
+            case -1:
+        
+                printf("FAIL");
+            case 0:
+                close(pipe1[0]);
+                dup2(pipe1[1], 1);
+                close(pipe1[1]);
+                exit(categoryExecute(t->left));
+
+            default:
+                wait(&status);
+                close(pipe1[1]);
+                dup2(pipe1[0], 0);
+                close(pipe1[0]);
+                categoryExecute(t->right);
+            }
+
+            dup2(saved_stdout, 1);
+            dup2(saved_stdin, 0);
+            
+    }
+    else if(typeCmd == CMD_BACKGROUND)
+    {
+        
+    }
+    else
+    {
+        //UH OH SOMETHING IS WRONG
+    }
+
+    dup2(saved_stdout, 1);
+    dup2(saved_stdin, 0);
+    
+    close(saved_stdout);
+    close(saved_stdin);
+
+
+    return status;
+}
+
+
+//***********************************
+
+//Take Care of individual commands
+
+
+int basicExecution(SHELLCMD *t)
+{
+    int status;
+    TIMEVAL startTime;
+    TIMEVAL endTime;
+    
+    showTime = false;
+    
+    int cargc = t->argc;
+    char ** cargv = t->argv;
+    
+
     
     if(strcmp(cargv[0], "time") == 0)
     {
@@ -323,12 +328,7 @@ int basicExecution(SHELLCMD *t)
         uint64_t uEndTime = (endTime.tv_sec * (uint64_t)1000) + (endTime.tv_usec / 1000);
         fprintf(stderr, "%llu\n", uEndTime-uStartTime);
     }
-    
-    dup2(saved_stdout, 1);
-    dup2(saved_stdin, 0);
-    
-    close(saved_stdout);
-    close(saved_stdin);
+
     return status;
 }
 
