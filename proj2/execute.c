@@ -135,13 +135,12 @@ int basicExecution(SHELLCMD *t)
     
     if(t->infile != NULL)
     {
-        printf("Going infile ");
+        //printf("Going infile ");
         int fin = open(t->infile, O_RDONLY);
         
         if(fin == -1)
         {
-            //eroor
-            printf("Failure");
+            //error
         }
         
         dup2(fin, 0);
@@ -155,31 +154,32 @@ int basicExecution(SHELLCMD *t)
     
     if(t->outfile != NULL && t->append)
     {
-        printf("Going outfile append");
-        int fap = open(t->outfile, O_WRONLY| O_APPEND);
+        //printf("Going outfile append");
+        int fap = open(t->outfile, O_WRONLY| O_APPEND | O_CREAT);
         if(fap == -1)
         {
-            //eroor
-            printf("\n%s\n", t->outfile);
-            printf("Failure\n");
+            //error
+//            printf("\n%s\n", t->outfile);
+//            printf("Failure\n");
         }
         dup2(fap, 1);
         close(fap);
+        
     }
     else if(t->outfile != NULL)
     {
-        printf("Going outfile");
-        int fout = open(t->outfile, O_WRONLY);
+        //printf("Going outfile");
+        int fout = open(t->outfile, O_WRONLY | O_TRUNC);
         
         if(fout == -1)
         {
             //eroor
-            printf("\n%s\n", t->outfile);
-            printf("Failure\n");
+//            printf("\n%s\n", t->outfile);
+//            printf("Failure\n");
         }
-        
         dup2(fout, 1);
         close(fout);
+        
     }
     else
     {
@@ -203,16 +203,7 @@ int basicExecution(SHELLCMD *t)
             cargv = &cargv[1];
         }
         status = exitstatus;
-        
-        
-        dup2(saved_stdout, 1);
-        dup2(saved_stdin, 0);
     }
-    
-    
-    
-    
-    
     
     if(strcmp(cargv[0], "cd") == 0)
     {
@@ -267,12 +258,20 @@ int basicExecution(SHELLCMD *t)
         gettimeofday(&endTime, NULL);
         uint64_t uStartTime = (startTime.tv_sec * (uint64_t)1000) + (startTime.tv_usec / 1000);
         uint64_t uEndTime = (endTime.tv_sec * (uint64_t)1000) + (endTime.tv_usec / 1000);
-        fprintf(stderr, "%llu", uEndTime-uStartTime);
+        fprintf(stderr, "%llu\n", uEndTime-uStartTime);
     }
     
+    dup2(saved_stdout, 1);
+    dup2(saved_stdin, 0);
     
+    close(saved_stdout);
+    close(saved_stdin);
     return status;
 }
+
+
+
+
 int pathCommands(char * path, SHELLCMD *t)
 {
     
