@@ -123,7 +123,7 @@ int categoryExecute(SHELLCMD *t)
                 wait(&status);
                 close(pipe1[1]);
                 dup2(pipe1[0], 0);
-                close(pipe1[0]);
+                
                 categoryExecute(t->right);
             }
 
