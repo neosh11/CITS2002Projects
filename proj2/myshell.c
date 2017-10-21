@@ -9,21 +9,11 @@
  */
 
 int shellInstance(int argc, char *argv[]);
+int shellInstance(char *argv)
 
 
 int main(int argc, char *argv[])
 {
-    return shellInstance(argc, argv);
-}
-
-
-int shellInstance(int argc, char *argv[])
-{
-    //  REMEMBER THE PROGRAM'S NAME (TO REPORT ANY LATER ERROR MESSAGES)
-    argv0 = (argv0 = strrchr(argv[0], '/')) ? argv0 + 1 : argv[0];
-    argc--; // skip 1st command-line argument
-    argv++;
-
     //  INITIALIZE THE THREE INTERNAL VARIABLES
     HOME = getenv("HOME");
     if (HOME == NULL)
@@ -53,8 +43,27 @@ int shellInstance(int argc, char *argv[])
         enqueue(valuePath);
     }
 
+    int statusShell = shellInstance(argc, argv);
+    delete();
 
-    //  DETERMINE IF THIS SHELL IS INTERACTIVE
+    return statusShell;
+}
+
+int shellInstance(char *argv)
+{
+    return shellInstance(1, (char *[]) {argv});
+}
+
+int shellInstance(int argc, char *argv[])
+{
+    //  REMEMBER THE PROGRAM'S NAME (TO REPORT ANY LATER ERROR MESSAGES)
+    argv0 = (argv0 = strrchr(argv[0], '/')) ? argv0 + 1 : argv[0];
+    argc--; // skip 1st command-line argument
+    
+    //CANNOT SEE A USE FOR THIS AT THIS POINT
+    argv++;
+
+    //  DETERMINE IF THIS SHELL IS INTERACTIVE  //Maybe localize??
     interactive = (isatty(fileno(stdin)) && isatty(fileno(stdout)));
 
     int exitstatus = EXIT_SUCCESS;
