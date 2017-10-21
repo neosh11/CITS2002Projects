@@ -97,7 +97,42 @@ int categoryExecute(SHELLCMD *t)
     }
     else if(typeCmd == CMD_PIPE)
     {
+
+        int saved_stdout = dup(1);
+        int saved_stdin = dup(0);
+
+        int pipe1[2];
         
+            if((pipe(pipe1)) != 0)
+            {
+                printf("FAIL");
+            }
+        
+            switch(fork())
+            {
+            case -1:
+        
+                printf("FAIL");
+            case 0:
+                close(pipe1[0]);
+                dup2(pipe1[1], 1);
+
+                categoryExecute(t->left);
+
+            default:
+                wait(&status);
+                close(pipe1[1]);
+                dup2(pipe1[0], 0);
+                close(pipe1[0]);
+                categoryExecute(t->right);
+            }
+
+            dup2(saved_stdout, 1);
+            dup2(saved_stdin, 0);
+
+            close(saved_stdout);
+            close(saved_stdin);
+
     }
     else if(typeCmd == CMD_BACKGROUND)
     {
