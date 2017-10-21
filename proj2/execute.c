@@ -88,7 +88,7 @@ int categoryExecute(SHELLCMD *t)
                 //failure
                 break;
             case 0:
-                categoryExecute(t->left);
+                exit(categoryExecute(t->left));
                 break;
             default:
                 wait(&status);
@@ -294,6 +294,25 @@ int basicExecution(SHELLCMD *t)
     if(status != EXIT_SUCCESS)
     {
         //HERE??? CMDS
+        if (access(t->argv[0], F_OK) != -1)
+        {
+            status = EXIT_SUCCESS;
+
+            switch(fork())
+            {
+            case -1:
+
+            //failure
+
+            case 0:
+                
+            //stuff
+
+            default:
+                wait(NULL);
+            }
+        }
+
     }
     
     if(showTime)
