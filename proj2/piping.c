@@ -32,7 +32,22 @@ int main(int argc, char * argv[])
         close(pipe1[1]);
         dup2(pipe1[0], 0);
         close(pipe1[0]);
-        execv("/usr/bin/sort", (char* []) {"sort", NULL});
+
+        switch(fork())
+        {
+            case -1:
+            
+                    printf("FAIL");
+            case 0:
+                    execv("/usr/bin/sort", (char* []) {"sort", NULL});
+            default:
+            wait(NULL);
+        }
     }
+
+    int n = 0;
+    printf("HELLO Enter number: ");
+    scanf("%d", &n);
+    printf("square is %d", n*n);
     return 0;
 }
