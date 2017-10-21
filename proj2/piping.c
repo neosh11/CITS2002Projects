@@ -24,13 +24,13 @@ int main(int argc, char * argv[])
         printf("FAIL");
     case 0:
         close(pipe1[0]);
-        dup2(pipe[1], 1);
+        dup2(pipe1[1], 1);
 
         execv("/bin/ls", (char* []) {"ls", NULL});
     default:
         wait(NULL);
         close(pipe1[1]);
-        dup2(pipe[0], 0);
+        dup2(pipe1[0], 0);
         execv("/usr/bin/sort", (char* []) {"sort", NULL});
     }
     return 0;
