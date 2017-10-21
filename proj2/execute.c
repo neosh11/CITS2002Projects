@@ -117,7 +117,7 @@ int categoryExecute(SHELLCMD *t)
                 close(pipe1[0]);
                 dup2(pipe1[1], 1);
                 close(pipe1[1]);
-                categoryExecute(t->left);
+                exit(categoryExecute(t->left));
 
             default:
                 wait(&status);
