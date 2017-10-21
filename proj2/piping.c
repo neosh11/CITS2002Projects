@@ -31,6 +31,7 @@ int main(int argc, char * argv[])
         wait(NULL);
         close(pipe1[1]);
         dup2(pipe1[0], 0);
+        close(pipe1[0]);
         execv("/usr/bin/sort", (char* []) {"sort", NULL});
     }
     return 0;
