@@ -13,7 +13,7 @@ int shellInstance(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     //  INITIALIZE THE THREE INTERNAL VARIABLES
-    printf("%s", FILELOCATION);
+    printf("%s\n", FILELOCATION);
     HOME = getenv("HOME");
     if (HOME == NULL)
     {
