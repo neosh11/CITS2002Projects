@@ -9,12 +9,11 @@
  */
 
 int shellInstance(int argc, char *argv[]);
-int shellInstanceQuick(char *argv);
-
 
 int main(int argc, char *argv[])
 {
     //  INITIALIZE THE THREE INTERNAL VARIABLES
+    printf("%s", FILELOCATION);
     HOME = getenv("HOME");
     if (HOME == NULL)
     {
@@ -47,11 +46,6 @@ int main(int argc, char *argv[])
     delete();
 
     return statusShell;
-}
-
-int shellInstanceQuick(char *argv)
-{
-    return shellInstance(1, (char *[]) {argv});
 }
 
 int shellInstance(int argc, char *argv[])

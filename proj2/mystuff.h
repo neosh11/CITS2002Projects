@@ -12,6 +12,8 @@
 #define check(X) printf("CHECK %d\n", X);
 #define printS(X) printf("%s\n", X)
 
+#define	FILELOCATION "__FILE__"
+
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);
 
