@@ -8,10 +8,14 @@
    Date:                date-of-submission
  */
 
+int shellInstance(int argc, char *argv[]);
+
+
 int main(int argc, char *argv[])
 {
     return shellInstance(argc, argv);
 }
+
 
 int shellInstance(int argc, char *argv[])
 {
