@@ -9,7 +9,7 @@
  */
 
 int shellInstance(int argc, char *argv[]);
-int shellInstance(char *argv)
+int shellInstanceQuick(char *argv);
 
 
 int main(int argc, char *argv[])
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     return statusShell;
 }
 
-int shellInstance(char *argv)
+int shellInstanceQuick(char *argv)
 {
     return shellInstance(1, (char *[]) {argv});
 }
