@@ -208,7 +208,7 @@ int basicExecution(SHELLCMD *t)
         
         if(fout == -1)
         {
-            //eroor
+            //   eroor
 //            printf("\n%s\n", t->outfile);
 //            printf("Failure\n");
         }
@@ -240,6 +240,7 @@ int basicExecution(SHELLCMD *t)
         status = exitstatus;
     }
     
+    //TODO: Perhaps add other options
     if(strcmp(cargv[0], "cd") == 0)
     {
         if(cargc >1)
@@ -248,9 +249,11 @@ int basicExecution(SHELLCMD *t)
         }
         else
         {
-            status = changeDirectory(NULL);
+            status = changeDirectory(HOME);
         }
     }
+
+
     else if(strcmp(cargv[0], "exit") == 0)
     {
         if(cargc >1)
@@ -286,6 +289,11 @@ int basicExecution(SHELLCMD *t)
     else
     {
         status = basicCommands(t);
+    }
+
+    if(status != EXIT_SUCCESS)
+    {
+        //HERE??? CMDS
     }
     
     if(showTime)
