@@ -88,7 +88,8 @@ int categoryExecute(SHELLCMD *t)
                 //failure
                 break;
             case 0:
-                exit(categoryExecute(t->left));
+                exit( categoryExecute(t->left) );
+                // exit(1);
                 break;
             default:
                 wait(&status);
