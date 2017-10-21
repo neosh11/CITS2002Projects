@@ -116,14 +116,14 @@ int categoryExecute(SHELLCMD *t)
             case 0:
                 close(pipe1[0]);
                 dup2(pipe1[1], 1);
-
+                close(pipe1[1]);
                 categoryExecute(t->left);
 
             default:
                 wait(&status);
                 close(pipe1[1]);
                 dup2(pipe1[0], 0);
-                
+                close(pipe1[0]);
                 categoryExecute(t->right);
             }
 
