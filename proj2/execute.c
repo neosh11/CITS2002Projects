@@ -301,9 +301,9 @@ int basicExecution(SHELLCMD *t)
 
     if(status != EXIT_SUCCESS)
     {
-        printf("HEHE");
         if (access(t->argv[0], F_OK) != -1)
         {
+            printf("HEHE");
             status = EXIT_SUCCESS;
 
             switch(fork())
@@ -319,16 +319,18 @@ int basicExecution(SHELLCMD *t)
                 int fileO = open(t->argv[0], O_RDONLY);
                 dup2(fileO, 0);
                 close(fileO);
-                if((execv(PROGLOCATION, (char*[]) {NULL})) == -1)
-                {
-                    printf("%s", PROGLOCATION);
-                }
+                execv(PROGLOCATION, (char*[]) {NULL})
+                
                 }
 
             //stuff
 
             default:
                 wait(&status);
+                if(status == -1)
+                {
+                    printf("%s", PROGLOCATION);
+                }
             }
         }
 
