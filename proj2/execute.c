@@ -356,7 +356,7 @@ int pathCommands(char * path, SHELLCMD *t)
         cargv = &cargv[1];
     }
     
-    int status;
+    int status = 0;
     switch (fork())
     {
             
@@ -426,6 +426,8 @@ int basicCommands(SHELLCMD *t)
             char *location = cargv[0];
             struct stat stat_buffer;
             
+
+            status = 0;
             if (stat(location, &stat_buffer) != 0)
             {
                 exit(EXIT_FAILURE);
@@ -438,6 +440,7 @@ int basicCommands(SHELLCMD *t)
             {
                 exit(EXIT_FAILURE);
             }
+
             break;
         }
         default:
