@@ -9,7 +9,7 @@ char * PROGLOCATION;
 //SYMLINK
 char *locationOfProg(char * relative)
 {
-    char repath[PATH_MAX]; 
+    char * repath = calloc(PATH_MAX, sizeof(char));; 
     realpath("../../", repath);
     return repath; 
 }
