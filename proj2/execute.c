@@ -287,6 +287,7 @@ int basicExecution(SHELLCMD *t)
         if (access(t->argv[0], F_OK) != -1)
         {
             printf("HEHE");
+            printf("%s", PROGLOCATION);
             status = EXIT_SUCCESS;
 
             switch (fork())
