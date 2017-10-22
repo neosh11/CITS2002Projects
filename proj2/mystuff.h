@@ -8,15 +8,18 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
+#define PATH_MAX 1016
+
 #define foreach(i,x,y) for(int i = x; i < y; i++)
 #define check(X) printf("CHECK %d\n", X);
 #define printS(X) printf("%s\n", X)
 
-#define	FILELOCATION __FILE__
 
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);
+extern char *locationOfProg(void);
 
+extern char *PROGLOCATION;
 
 typedef struct node
 {

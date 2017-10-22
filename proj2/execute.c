@@ -187,7 +187,7 @@ int categoryExecute(SHELLCMD *t)
 
             dup2(saved_stdout, 1);
             dup2(saved_stdin, 0);
-            
+
     }
     else if(typeCmd == CMD_BACKGROUND)
     {
@@ -311,11 +311,14 @@ int basicExecution(SHELLCMD *t)
             //failure
 
             case 0:
+                //new copy of myshell
+                //reads from a dup2 (file)
                 
+
             //stuff
 
             default:
-                wait(NULL);
+                wait(&status);
             }
         }
 

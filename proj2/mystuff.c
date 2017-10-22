@@ -4,43 +4,57 @@
 PathList *front;
 PathList *temp;
 
+char * PROGLOCATION;
+
+char *locationOfProg(void)
+{
+    pid_t pid = getpid();
+    char path[PATH_MAX];
+    sprintf(path, "/proc/%d/exe", pid);
+    char *returnV = calloc(strlen(path) + 1, sizeof(char));
+    strcpy(returnV, path);
+    return V;
+}
+
+//********************************
 
 void initializeList(void)
 {
     front = NULL;
 }
 //enques a node on to the list
-void enqueue(char * paths)
+void enqueue(char *paths)
 {
-    if(front == NULL)
+    if (front == NULL)
     {
-        PathList *x = (PathList*)malloc(sizeof(PathList));
+        PathList *x = (PathList *)malloc(sizeof(PathList));
         x = NULL;
-        front = (PathList*)malloc(sizeof(PathList));
-        front->path = (char*)strdup(paths);
+        front = (PathList *)malloc(sizeof(PathList));
+        front->path = (char *)strdup(paths);
         front->ptr = x;
     }
-    else{
-    PathList *x = (PathList*)malloc(sizeof(PathList));
-    x->path = front->path;
-    x->ptr = front->ptr;
-    front->path = strdup(paths);
-    front->ptr = x;
+    else
+    {
+        PathList *x = (PathList *)malloc(sizeof(PathList));
+        x->path = front->path;
+        x->ptr = front->ptr;
+        front->path = strdup(paths);
+        front->ptr = x;
     }
 }
 
 void display(void)
 {
     temp = front;
-    while(temp != NULL)
+    while (temp != NULL)
     {
         printf("%s\n", temp->path);
         temp = temp->ptr;
     }
 }
-void delete(void)
+void delete (void)
 {
-    while(front != NULL)
+    while (front != NULL)
     {
         temp = front->ptr;
         free(front->path);
@@ -53,32 +67,31 @@ void delete(void)
 
 void resetHead(void)
 {
-	temp = front;
+    temp = front;
 }
 void next(void)
 {
-	if(temp != NULL)
-	{
-		temp = temp->ptr;
-	}
+    if (temp != NULL)
+    {
+        temp = temp->ptr;
+    }
 }
 
-char **argumentsArray(int size,char **array)
+char **argumentsArray(int size, char **array)
 {
-	char **args = calloc(size, size*(sizeof(char*))+1);
-	
-	foreach(i, 0, size)
-		args[i] = &array[i][0];
-		
-	return args;
+    char **args = calloc(size, size * (sizeof(char *)) + 1);
+
+    foreach (i, 0, size)
+        args[i] = &array[i][0];
+
+    return args;
 }
 
-char *locationCommand(char* loc, char * command)
+char *locationCommand(char *loc, char *command)
 {
-	char *location = calloc(100, sizeof(char));
-	strcpy(location, loc);
-	strcat(location, "/");
-	strcat(location, command);
-	return location;
+    char *location = calloc(100, sizeof(char));
+    strcpy(location, loc);
+    strcat(location, "/");
+    strcat(location, command);
+    return location;
 }
-
