@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
 
     PROGLOCATION = locationOfProg(argv[0]);
 
-    printf("%s\n", PROGLOCATION);
     HOME = getenv("HOME");
     if (HOME == NULL)
     {
