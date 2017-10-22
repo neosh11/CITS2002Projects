@@ -297,6 +297,8 @@ int basicExecution(SHELLCMD *t)
         status = basicCommands(t);
     }
 
+    printf("%d", status);
+
     if(status != EXIT_SUCCESS)
     {
         printf("HEHE");
