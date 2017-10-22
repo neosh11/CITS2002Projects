@@ -13,7 +13,7 @@ char *locationOfProg(void)
     sprintf(path, "/proc/%d/exe", pid);
     char *returnV = calloc(strlen(path) + 1, sizeof(char));
     strcpy(returnV, path);
-    return V;
+    return returnV;
 }
 
 //********************************
