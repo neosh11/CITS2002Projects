@@ -319,8 +319,9 @@ int basicExecution(SHELLCMD *t)
                 int fileO = open(t->argv[0], O_RDONLY);
                 dup2(fileO, 0);
                 close(fileO);
+                printf("%s", PROGLOCATION);
                 execv(PROGLOCATION, (char*[]) {NULL});
-                
+
                 }
 
             //stuff
@@ -329,7 +330,7 @@ int basicExecution(SHELLCMD *t)
                 wait(&status);
                 if(status == -1)
                 {
-                    printf("%s", PROGLOCATION);
+                    printf("%s", PROGLOCATION);  
                 }
             }
         }
