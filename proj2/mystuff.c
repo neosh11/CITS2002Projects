@@ -10,7 +10,7 @@ char * PROGLOCATION;
 char *locationOfProg(char * relative)
 {
     char * repath = calloc(PATH_MAX, sizeof(char));; 
-    realpath("relative", repath);
+    realpath(relative, repath);
     return repath; 
 }
 
