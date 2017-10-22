@@ -300,12 +300,17 @@ int basicExecution(SHELLCMD *t)
                 //new copy of myshell
                 //reads from a dup2 (file)
                 {
-                    printf("%s", PROGLOCATION);
-                    int fileO = open(t->argv[0], O_RDONLY);
-                    dup2(fileO, 0);
-                    close(fileO);
+                    int fin = open(t->argv[0], O_RDONLY);
+                    
+                            if (fin == -1)
+                            {
+                                //error
+                            }
+                    
+                    dup2(fin, 0);
+                    close(fin);
 
-                    execv(PROGLOCATION, (char *[]){NULL});
+                    execv(PROGLOCATION, (char *[]){PROGLOCATION, NULL});
                 }
 
             //stuff
