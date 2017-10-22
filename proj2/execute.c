@@ -356,7 +356,7 @@ int pathCommands(char * path, SHELLCMD *t)
         cargv = &cargv[1];
     }
     
-    int status = 0;
+    int status;
     switch (fork())
     {
             
@@ -375,16 +375,19 @@ int pathCommands(char * path, SHELLCMD *t)
             
             if (stat(location, &stat_buffer) != 0)
             {
-                exit(EXIT_FAILURE);
+                status = EXIT_FAILURE;
+                exit(status);
             }
             else if (S_ISREG(stat_buffer.st_mode))
             {
-                execv(location, argumentsArray(cargc, cargv));
+                status = execv(location, argumentsArray(cargc, cargv));
             }
             else
             {
-                exit(EXIT_FAILURE);
+                status = EXIT_FAILURE;
+                exit(status);
             }
+
             break;
         }
         default:
@@ -430,15 +433,17 @@ int basicCommands(SHELLCMD *t)
             status = 0;
             if (stat(location, &stat_buffer) != 0)
             {
-                exit(EXIT_FAILURE);
+                status = EXIT_FAILURE;
+                exit(status);
             }
             else if (S_ISREG(stat_buffer.st_mode))
             {
-                execv(location, argumentsArray(cargc, cargv));
+                status = execv(location, argumentsArray(cargc, cargv));
             }
             else
             {
-                exit(EXIT_FAILURE);
+                status = EXIT_FAILURE;
+                exit(status);
             }
 
             break;
