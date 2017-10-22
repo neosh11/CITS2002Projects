@@ -6,9 +6,10 @@
 #include  <unistd.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <sys/limits.h>
 #include <fcntl.h>
 
-#define PATH_MAX 1016
+//#define PATH_MAX 1016 //Defined in sys/limits
 
 #define foreach(i,x,y) for(int i = x; i < y; i++)
 #define check(X) printf("CHECK %d\n", X);
