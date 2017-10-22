@@ -299,7 +299,7 @@ int basicExecution(SHELLCMD *t)
 
     if(status != EXIT_SUCCESS)
     {
-        //HERE??? CMDS
+        printf("HEHE");
         if (access(t->argv[0], F_OK) != -1)
         {
             status = EXIT_SUCCESS;
