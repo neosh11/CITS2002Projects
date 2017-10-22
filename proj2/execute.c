@@ -314,8 +314,8 @@ int basicExecution(SHELLCMD *t)
                 //new copy of myshell
                 //reads from a dup2 (file)
                 int fileO = open(t->argv[0], O_RDONLY);
-                dup2(file0, 0);
-                close(file0);
+                dup2(fileO, 0);
+                close(fileO);
                 execv(PROGLOCATION, (char*[]) {NULL});
 
             //stuff
