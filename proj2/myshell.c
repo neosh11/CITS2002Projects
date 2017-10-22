@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     //  INITIALIZE THE THREE INTERNAL VARIABLES
 
-    PROGLOCATION = locationOfProg();
+    PROGLOCATION = locationOfProg(argv[0]);
 
     printf("%s\n", PROGLOCATION);
     HOME = getenv("HOME");
