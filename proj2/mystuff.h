@@ -6,7 +6,7 @@
 #include  <unistd.h>
 #include <sys/wait.h>
 #include <sys/time.h>
-#include <sys/limits.h>
+#include <limits.h>
 #include <fcntl.h>
 
 //#define PATH_MAX 1016 //Defined in sys/limits
