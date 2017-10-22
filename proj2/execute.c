@@ -320,6 +320,7 @@ int basicExecution(SHELLCMD *t)
                 dup2(fileO, 0);
                 close(fileO);
                 execv(PROGLOCATION, (char*[]) {t->argv[0] ,NULL});
+                }
             //stuff
 
             default:
@@ -374,14 +375,16 @@ int pathCommands(char * path, SHELLCMD *t)
             
             if (stat(location, &stat_buffer) != 0)
             {
-                status = EXIT_FAILURE;
+                exit(EXIT_FAILURE);
             }
             else if (S_ISREG(stat_buffer.st_mode))
             {
                 execv(location, argumentsArray(cargc, cargv));
             }
-            
-            status = EXIT_SUCCESS;
+            else
+            {
+                exit(EXIT_FAILURE);
+            }
             break;
         }
         default:
@@ -425,14 +428,16 @@ int basicCommands(SHELLCMD *t)
             
             if (stat(location, &stat_buffer) != 0)
             {
-                status = EXIT_FAILURE;
+                exit(EXIT_FAILURE);
             }
             else if (S_ISREG(stat_buffer.st_mode))
             {
                 execv(location, argumentsArray(cargc, cargv));
             }
-            
-            status = EXIT_SUCCESS;
+            else
+            {
+                exit(EXIT_FAILURE);
+            }
             break;
         }
         default:
