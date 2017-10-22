@@ -18,7 +18,7 @@
 
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);
-extern char *locationOfProg(void);
+char *locationOfProg(char * relative);
 
 extern char *PROGLOCATION;
 

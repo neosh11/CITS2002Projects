@@ -6,14 +6,12 @@ PathList *temp;
 
 char * PROGLOCATION;
 
-char *locationOfProg(void)
+//SYMLINK
+char *locationOfProg(char * relative)
 {
-    pid_t pid = getpid();
-    char path[PATH_MAX];
-    sprintf(path, "/proc/%d/exe", pid);
-    char *returnV = calloc(strlen(path) + 1, sizeof(char));
-    strcpy(returnV, path);
-    return returnV;
+    char repath[PATH_MAX]; 
+    realpath("../../", repath);
+    return repath; 
 }
 
 //********************************
