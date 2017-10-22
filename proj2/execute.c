@@ -51,8 +51,8 @@ int categoryExecute(SHELLCMD *t)
 {
 
      
-    int saved_stdout = dup(1);
-    int saved_stdin = dup(0);
+    int saved_stdout = dup(STDOUT_FILENO);
+    int saved_stdin = dup(STDIN_FILENO);
     
     
 
@@ -66,12 +66,8 @@ int categoryExecute(SHELLCMD *t)
             //error
         }
         
-        dup2(fin, 0);
+        dup2(fin, STDIN_FILENO);
         close(fin);
-    }
-    else
-    {
-        //nothing
     }
     
     
@@ -104,10 +100,7 @@ int categoryExecute(SHELLCMD *t)
         close(fout);
         
     }
-    else
-    {
-        //nothing
-    }
+
 
 
     int status = 1;
@@ -118,11 +111,15 @@ int categoryExecute(SHELLCMD *t)
     {
         status = basicExecution(t);
     }
+    
+    
     else if(typeCmd == CMD_SEMICOLON)
     {
         status = categoryExecute(t->left);
         status = categoryExecute(t->right);
     }
+    
+    
     else if(typeCmd == CMD_AND)
     {
         status = categoryExecute(t->left);
@@ -131,6 +128,8 @@ int categoryExecute(SHELLCMD *t)
             status = categoryExecute(t->right);
         }
     }
+    
+    
     else if(typeCmd == CMD_OR)
     {
         
@@ -140,6 +139,8 @@ int categoryExecute(SHELLCMD *t)
             status = categoryExecute(t->right);
         }
     }
+    
+    
     else if(typeCmd == CMD_SUBSHELL)
     {
         
@@ -157,6 +158,8 @@ int categoryExecute(SHELLCMD *t)
         }
         
     }
+    
+    
     else if(typeCmd == CMD_PIPE)
     {
         int pipe1[2];
@@ -173,22 +176,24 @@ int categoryExecute(SHELLCMD *t)
                 printf("FAIL");
             case 0:
                 close(pipe1[0]);
-                dup2(pipe1[1], 1);
+                dup2(pipe1[1], STDOUT_FILENO);
                 close(pipe1[1]);
                 exit(categoryExecute(t->left));
 
             default:
                 wait(&status);
                 close(pipe1[1]);
-                dup2(pipe1[0], 0);
+                dup2(pipe1[0], STDIN_FILENO);
                 close(pipe1[0]);
                 categoryExecute(t->right);
             }
 
-            dup2(saved_stdout, 1);
-            dup2(saved_stdin, 0);
+            dup2(saved_stdout, STDOUT_FILENO);
+            dup2(saved_stdin, STDIN_FILENO);
 
     }
+    
+    
     else if(typeCmd == CMD_BACKGROUND)
     {
         
@@ -216,7 +221,7 @@ int categoryExecute(SHELLCMD *t)
 
 int basicExecution(SHELLCMD *t)
 {
-    int status;
+    int status = EXIT_FAILURE;
     TIMEVAL startTime;
     TIMEVAL endTime;
     
@@ -271,6 +276,8 @@ int basicExecution(SHELLCMD *t)
             exit(exitstatus);
         }
     }
+    
+    
     else if(strchr(cargv[0], '/') == NULL)
     {
         
@@ -298,6 +305,10 @@ int basicExecution(SHELLCMD *t)
     }
 
     printf("%d", status);
+    
+    //NEW SHELL TO RUN THE FILE
+    
+    
 
     if(status != EXIT_SUCCESS)
     {
@@ -316,10 +327,22 @@ int basicExecution(SHELLCMD *t)
                 //new copy of myshell
                 //reads from a dup2 (file)
                 {
-                int fileO = open(t->argv[0], O_RDONLY);
-                dup2(fileO, 0);
-                close(fileO);
-                execv(PROGLOCATION, (char*[]) {t->argv[0] ,NULL});
+                    if(t->argv[0] != NULL)
+                    {
+                        //printf("Going infile ");
+                        int fin = open(t->argv[0], O_RDONLY);
+                        
+                        if(fin == -1)
+                        {
+                            //error
+                        }
+                        
+                        dup2(fin, 0);
+                        close(fin);
+                    }
+                    
+                    execv(PROGLOCATION, (char*[]) {"./shell" ,NULL});
+                    
                 }
             //stuff
 
