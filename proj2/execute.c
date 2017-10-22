@@ -319,7 +319,7 @@ int basicExecution(SHELLCMD *t)
                 int fileO = open(t->argv[0], O_RDONLY);
                 dup2(fileO, 0);
                 close(fileO);
-                execv(PROGLOCATION, (char*[]) {NULL})
+                execv(PROGLOCATION, (char*[]) {NULL});
                 
                 }
 
