@@ -313,10 +313,12 @@ int basicExecution(SHELLCMD *t)
             case 0:
                 //new copy of myshell
                 //reads from a dup2 (file)
+                {
                 int fileO = open(t->argv[0], O_RDONLY);
                 dup2(fileO, 0);
                 close(fileO);
                 execv(PROGLOCATION, (char*[]) {NULL});
+                }
 
             //stuff
 
