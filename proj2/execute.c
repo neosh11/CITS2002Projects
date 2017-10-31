@@ -38,63 +38,72 @@ int execute_shellcmd(SHELLCMD *t)
     }
     return exitstatus;
 }
-
-//CMD_COMMAND = 0,	// an actual command node itself
-//CMD_SEMICOLON,		// as in   cmd1 ;  cmd2
-//CMD_AND,		// as in   cmd1 && cmd2
-//CMD_OR,			// as in   cmd1 || cmd2
-//CMD_SUBSHELL,		// as in   ( cmds )
-//CMD_PIPE,		// as in   cmd1 |  cmd2
-//CMD_BACKGROUND
+/**
+ *This function traverses through the binary tree and acts appropriately depending on
+ *the node it's on.
+ *It is responsible for:
+ * 1)Input/Output redirection
+ *
+ * 2)Executing commands (command nodes)
+ * 3)Semicolon exec as in   cmd1 ;  cmd2
+ * 4)And exec as in   cmd1 && cmd2
+ * 5)Or exec as in   cmd1 || cmd2
+ * 6)Subshell exec as in   (cmds)
+ * 7)Pipe exec as in   cmd1 | cmd2
+ * 8)Background exec
+ *
+ *
+ * */
 
 int categoryExecute(SHELLCMD *t)
 {
 
      
-    int saved_stdout = dup(STDOUT_FILENO);
-    int saved_stdin = dup(STDIN_FILENO);
+    int saved_stdout = dup(STDOUT_FILENO);//store stdout for restore
+    int saved_stdin = dup(STDIN_FILENO);//store stdin for restore
     
     
-
+    //The sequence   command < infile   requests that the command use infile as its standard input
     if(t->infile != NULL)
     {
-        //printf("Going infile ");
         int fin = open(t->infile, O_RDONLY);
         
         if(fin == -1)
         {
-            //error
+            //error TODO
+            //couldn't open file
         }
         
         dup2(fin, STDIN_FILENO);
         close(fin);
     }
     
-    
+    //The sequence   command >> outfile   requests that the command appends its standard output to the file outfile.
+    //If outfile does not exist it is created.
     if(t->outfile != NULL && t->append)
     {
-        //printf("Going outfile append");
         int fap = open(t->outfile, O_WRONLY| O_APPEND | O_CREAT);
         if(fap == -1)
         {
-            //error
-//            printf("\n%s\n", t->outfile);
-//            printf("Failure\n");
+            //error TODO
+            //Couldn't create/write to file
         }
         dup2(fap, 1);
         close(fap);
         
     }
+    //The sequence   command > outfile   requests that the command use outfile as its standard output.
+    //If the file outfile does not exist then it is created. If it does exist it is truncated to zero then rewritten.
+
+    
     else if(t->outfile != NULL)
     {
-        //printf("Going outfile");
-        int fout = open(t->outfile, O_WRONLY | O_TRUNC);
+        int fout = open(t->outfile, O_WRONLY | O_TRUNC | O_CREAT);
         
         if(fout == -1)
         {
-            //   eroor
-//            printf("\n%s\n", t->outfile);
-//            printf("Failure\n");
+            //   error TODO
+            //Couldn't create/write to file
         }
         dup2(fout, 1);
         close(fout);
@@ -103,24 +112,24 @@ int categoryExecute(SHELLCMD *t)
 
 
 
-    int status = 1;
+    int status = 1;  //Status that will be returned, it's value is insignificant now
     
     CMDTYPE typeCmd = t->type;
     
-    if(typeCmd == CMD_COMMAND)
+    if(typeCmd == CMD_COMMAND) //Executing commands (command nodes)
     {
         status = basicExecution(t);
     }
     
     
-    else if(typeCmd == CMD_SEMICOLON)
+    else if(typeCmd == CMD_SEMICOLON) //Semicolon exec
     {
         status = categoryExecute(t->left);
         status = categoryExecute(t->right);
     }
     
     
-    else if(typeCmd == CMD_AND)
+    else if(typeCmd == CMD_AND) //And exec
     {
         status = categoryExecute(t->left);
         if(status == EXIT_SUCCESS)
@@ -130,7 +139,7 @@ int categoryExecute(SHELLCMD *t)
     }
     
     
-    else if(typeCmd == CMD_OR)
+    else if(typeCmd == CMD_OR) //Or exec
     {
         
         status = categoryExecute(t->left);
@@ -141,17 +150,16 @@ int categoryExecute(SHELLCMD *t)
     }
     
     
-    else if(typeCmd == CMD_SUBSHELL)
+    else if(typeCmd == CMD_SUBSHELL) //Subshell Exec
     {
         
         switch(fork())
         {
             case -1:
-                //failure
+                //failure TODO
                 break;
             case 0:
                 exit( categoryExecute(t->left) );
-                // exit(1);
                 break;
             default:
                 wait(&status);
@@ -160,19 +168,20 @@ int categoryExecute(SHELLCMD *t)
     }
     
     
-    else if(typeCmd == CMD_PIPE)
+    else if(typeCmd == CMD_PIPE)  //Pipe exec
     {
         int pipe1[2];
         
             if((pipe(pipe1)) != 0)
             {
+                //TODO
                 printf("FAIL");
             }
         
             switch(fork())
             {
             case -1:
-        
+                //TODO
                 printf("FAIL");
             case 0:
                 close(pipe1[0]);
@@ -194,7 +203,7 @@ int categoryExecute(SHELLCMD *t)
     }
     
     
-    else if(typeCmd == CMD_BACKGROUND)
+    else if(typeCmd == CMD_BACKGROUND) //EXEC IN BG
     {
         
     }
@@ -206,10 +215,12 @@ int categoryExecute(SHELLCMD *t)
     dup2(saved_stdout, 1);
     dup2(saved_stdin, 0);
     
-    close(saved_stdout);
-    close(saved_stdin);
+    close(saved_stdout); //Restore incase it was changed
+    close(saved_stdin); //Restore incase it was changed
 
 
+    printf("%d", status);
+    
     return status;
 }
 
@@ -251,12 +262,37 @@ int basicExecution(SHELLCMD *t)
         status = exitstatus;
     }
     
-    //TODO: Perhaps add other options
+    //TODO: UPDATE, IF DOESN'T COMMENCE WITH / CONSIDER CDPATH
     if(strcmp(cargv[0], "cd") == 0)
     {
         if(cargc >1)
         {
-            status = changeDirectory(cargv[1]);
+            if(strchr(cargv[0], '/') == NULL)
+            {
+                resetHead(&cdList);
+                while(cdList->temp != NULL)
+                {
+                    char *location = locationCommand(cdList->temp->path, cargv[1]);
+                    printf("%s", location);
+                    struct stat stat_buffer;
+                    
+                    if (stat(location, &stat_buffer) != 0)
+                    {
+                        next(&cdList);
+                        free(location);
+                        continue;
+                    }
+
+                    status = changeDirectory(location);
+                    free(location);
+                    
+                    next(&cdList);
+                    
+                    if(status == EXIT_SUCCESS)
+                        break;
+                }
+
+            }
         }
         else
         {
@@ -277,24 +313,27 @@ int basicExecution(SHELLCMD *t)
         }
     }
     
-    
+    //CHECK IF IT DOES NOT CONTAIN A '/'
+    //IF NOT, EXECUTE PATH COMMANDS i.e. execute from path if possible
     else if(strchr(cargv[0], '/') == NULL)
     {
         
-        resetHead();
-        while(temp != NULL)
+        resetHead(&pathList);
+        while(pathList->temp != NULL)
         {
-            char *location = locationCommand(temp->path, cargv[0]);
+            char *location = locationCommand(pathList->temp->path, cargv[0]);
             struct stat stat_buffer;
             
             if (stat(location, &stat_buffer) != 0)
             {
-                next();
+                next(&pathList);
                 continue;
             }
             
-            status = pathCommands(temp->path, t);
-            next();
+            status = pathCommands(pathList->temp->path, t);
+            free(location);
+            
+            next(&pathList);
             if(status == EXIT_SUCCESS)
                 break;
         }
@@ -303,8 +342,6 @@ int basicExecution(SHELLCMD *t)
     {
         status = basicCommands(t);
     }
-
-    printf("%d", status);
     
     //NEW SHELL TO RUN THE FILE
     
@@ -315,8 +352,7 @@ int basicExecution(SHELLCMD *t)
         if (access(t->argv[0], F_OK) != -1)
         {
             printf("HEHE");
-            status = EXIT_SUCCESS;
-
+            
             switch(fork())
             {
             case -1:
@@ -329,7 +365,6 @@ int basicExecution(SHELLCMD *t)
                 {
                     if(t->argv[0] != NULL)
                     {
-                        //printf("Going infile ");
                         int fin = open(t->argv[0], O_RDONLY);
                         
                         if(fin == -1)
@@ -419,6 +454,7 @@ int pathCommands(char * path, SHELLCMD *t)
             break;
         }
     }
+    
     return status;
 }
 

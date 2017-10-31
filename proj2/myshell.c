@@ -35,26 +35,49 @@ int main(int argc, char *argv[])
     }
     
     //STORE ALL PATH VARIABLES IN A LIST
-    initializeList();
+    initializeList(&pathList);
     
+    char *valuePath = malloc((strlen(PATH)+1)*sizeof(char));
+    char *PATHcopy = malloc((strlen(PATH)+1)*sizeof(char));
+
+    strcpy(PATHcopy, PATH);
+    valuePath = strtok(PATHcopy, ":");
     
-    char *valuePath = malloc(sizeof(PATH));
-    strcpy(valuePath, PATH); //TO NOT DESTROY PATH
-    
-    
-    valuePath = strtok(valuePath, ":");
-    enqueue(valuePath);
-    
+    enqueue(&pathList, valuePath);
     
     while ((valuePath = strtok(NULL, ":")) != NULL)
     {
-        enqueue(valuePath);
+        enqueue(&pathList, valuePath);
     }
+    free(valuePath);
+    free(PATHcopy);
     
+    //STORE ALL CDPATH VARIABLES IN A LIST
     
+    initializeList(&cdList);
+    
+    valuePath = malloc((strlen(CDPATH)+1)*sizeof(char));
+    char *CDPATHcopy = malloc((strlen(CDPATH)+1)*sizeof(char));
+
+    strcpy(CDPATHcopy, CDPATH);
+    
+    //HERE
+    valuePath = strtok(CDPATHcopy, ":");
+    
+    enqueue(&cdList, valuePath);
+    
+    while ((valuePath = strtok(NULL, ":")) != NULL)
+    {
+        enqueue(&pathList, valuePath);
+    }
+    free(valuePath);
+    free(CDPATHcopy);
+
+    
+    //INITIALIZE SHELL
     int statusShell = shellInstance(argc, argv);
     
-    delete();
+    delete(&pathList);
     
     return statusShell;
 }

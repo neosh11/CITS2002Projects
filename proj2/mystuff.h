@@ -22,26 +22,35 @@ char *locationOfProg(char * relative);
 
 extern char *PROGLOCATION;
 
+typedef struct timeval TIMEVAL;
+
+
 typedef struct node
 {
     char * path;
     struct node *ptr;
-} PathList;
+} NODE;
 
-typedef struct timeval TIMEVAL;
+typedef struct List
+{
+    NODE *front;
+    NODE *temp;
+    NODE **end;
+} LIST;
+
+extern LIST * pathList;
+extern LIST * cdList;
 
 //************************************
-//Identifier nodes for reference
-extern PathList *front;
-extern PathList *temp;
 
-extern void initializeList(void);
-extern void enqueue(char * paths);
-extern void delete(void);
 
-extern void resetHead(void);
-extern void next(void);
+extern void initializeList(LIST **list);
+extern void enqueue(LIST **list, char * paths);
+extern void delete(LIST **list);
 
-extern void display(void);//for debugging
+extern void resetHead(LIST **list);
+extern void next(LIST **list);
+
+extern void display(LIST **list);//for debugging
 
 

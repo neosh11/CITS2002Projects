@@ -1,8 +1,8 @@
 #include "myshell.h"
 #include "mystuff.h"
 
-PathList *front;
-PathList *temp;
+LIST * pathList;
+LIST * cdList;
 
 char * PROGLOCATION;
 
@@ -16,64 +16,76 @@ char *locationOfProg(char * relative)
 
 //********************************
 
-void initializeList(void)
+void initializeList(LIST **list)
 {
-    front = NULL;
+    *list = (LIST *)malloc(sizeof(LIST));
+    (*list)->front = NULL;
+    (*list)->end = (NODE **)malloc(sizeof(NODE *));
 }
+
 //enques a node on to the list
-void enqueue(char *paths)
+void enqueue(LIST **list, char * paths)
 {
-    if (front == NULL)
+    
+    if ((*list)->front == NULL)
     {
-        PathList *x = (PathList *)malloc(sizeof(PathList));
-        x = NULL;
-        front = (PathList *)malloc(sizeof(PathList));
-        front->path = (char *)strdup(paths);
-        front->ptr = x;
+
+        (*list)->front = (NODE *)malloc(sizeof(NODE));
+        (*list)->front->path = (char *)strdup(paths);
+        (*list)->front->ptr = NULL;
+        (*list)->end = &((*list)->front->ptr);
     }
     else
     {
-        PathList *x = (PathList *)malloc(sizeof(PathList));
-        x->path = front->path;
-        x->ptr = front->ptr;
-        front->path = strdup(paths);
-        front->ptr = x;
+        (*(*list)->end) = (NODE *)malloc(sizeof(NODE));
+        (*(*list)->end)->path = strdup(paths);
+        
+        NODE *x = (NODE *)malloc(sizeof(NODE));
+        x = NULL;
+
+        (*(*list)->end)->ptr = x;
+
+        (*list)->end = &((*(*list)->end)->ptr);
+
     }
 }
 
-void display(void)
+void display(LIST **list)
 {
-    temp = front;
-    while (temp != NULL)
+    (*list)->temp = (*list)->front;
+    while ((*list)->temp != NULL)
     {
-        printf("%s\n", temp->path);
-        temp = temp->ptr;
+        printf("%s\n", (*list)->temp->path);
+        (*list)->temp = (*list)->temp->ptr;
     }
 }
-void delete (void)
+void delete (LIST **list)
 {
-    while (front != NULL)
+    while ((*list)->front != NULL)
     {
-        temp = front->ptr;
-        free(front->path);
-        free(front);
-        front = temp;
+        (*list)->temp = (*list)->front->ptr;
+        free((*list)->front->path);
+        free((*list)->front);
+        (*list)->front = (*list)->temp;
     }
-    free(front);
-    free(temp);
+    free((*list)->front);
+    free((*list)->temp);
+    free(*list);
 }
 
-void resetHead(void)
+void resetHead(LIST **list)
 {
-    temp = front;
+    (*list)->temp = (*list)->front;
 }
-void next(void)
+void next(LIST **list)
 {
-    if (temp != NULL)
+    if ((*list)->temp != NULL)
     {
-        temp = temp->ptr;
+        (*list)->temp = (*list)->temp->ptr;
     }
 }
+
+//***************************************************
 
 char **argumentsArray(int size, char **array)
 {
