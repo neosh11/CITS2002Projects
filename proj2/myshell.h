@@ -46,7 +46,6 @@ typedef	struct sc {
     struct sc	*left, *right;	// pointers to left and right sub-shellcmds
 } SHELLCMD;
 
-
 extern SHELLCMD	*parse_shellcmd(FILE *);	// in parser.c
 extern void	free_shellcmd(SHELLCMD *);	// in parser.c
 extern int	execute_shellcmd(SHELLCMD *);	// in execute.c

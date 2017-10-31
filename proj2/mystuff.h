@@ -8,6 +8,8 @@
 #include <sys/time.h>
 #include <limits.h>
 #include <fcntl.h>
+#include <signal.h>
+
 
 //#define PATH_MAX 1016 //Defined in sys/limits
 
@@ -16,15 +18,21 @@
 #define printS(X) printf("%s\n", X)
 
 
+
+
 extern char **argumentsArray(int size,char **array);
 extern char *locationCommand(char* loc, char * command);
-char *locationOfProg(char * relative);
+extern char *locationOfProg(char * relative);
+
+extern int childrenArray[100];
+extern int childCount;
 
 extern char *PROGLOCATION;
 
 typedef struct timeval TIMEVAL;
 
-
+//****************************************
+//************ ARRAY LIST ****************
 typedef struct node
 {
     char * path;
@@ -47,10 +55,9 @@ extern LIST * cdList;
 extern void initializeList(LIST **list);
 extern void enqueue(LIST **list, char * paths);
 extern void delete(LIST **list);
-
 extern void resetHead(LIST **list);
 extern void next(LIST **list);
-
 extern void display(LIST **list);//for debugging
+
 
 

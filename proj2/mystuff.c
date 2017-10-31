@@ -4,7 +4,11 @@
 LIST * pathList;
 LIST * cdList;
 
+
 char * PROGLOCATION;
+
+int childrenArray[100];
+int childCount = 0;
 
 //SYMLINK
 char *locationOfProg(char * relative)

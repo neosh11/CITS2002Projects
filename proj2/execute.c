@@ -16,6 +16,10 @@ int basicCommands(SHELLCMD *t);
 int categoryExecute(SHELLCMD *t);
 int changeDirectory(char * dir);
 
+void quitChild(int signum);
+void killChild(int signum);
+
+
 //Made global to get the exit status
 int exitstatus=0;
 bool showTime;
@@ -202,9 +206,28 @@ int categoryExecute(SHELLCMD *t)
 
     }
     
-    
+    //TODO WHEN EXIT IS CALLED TERMINATE ALL PROCESSES
     else if(typeCmd == CMD_BACKGROUND) //EXEC IN BG
     {
+        int childId;
+        
+        switch(childId = fork())
+        {
+            case -1:
+                //TODO
+                printf("FAIL");
+            case 0:
+                
+                categoryExecute(t->left);
+                
+                kill( getppid() , SIGUSR1);
+                exit(0);
+                
+            default:
+                categoryExecute(t->right);
+                signal(SIGUSR1, killChild);
+        }
+
         
     }
     else
@@ -528,4 +551,12 @@ int changeDirectory(char * dir)
         status = chdir(HOME);
     }
     return status;
+}
+
+void killChild(int signum)
+{
+    int pid;
+    int x = wait(&pid);
+    printf("%d has finished\n", x);
+    
 }
