@@ -62,6 +62,10 @@ int execute_shellcmd(SHELLCMD *t)
 int categoryExecute(SHELLCMD *t)
 {
 
+    if(t == NULL)
+    {
+        return EXIT_SUCCESS;
+    }
      
     int saved_stdout = dup(STDOUT_FILENO);//store stdout for restore
     int saved_stdin = dup(STDIN_FILENO);//store stdin for restore
