@@ -1,10 +1,8 @@
 #include "mystuff.h"
 
-LIST * pathList;
+LIST * pathList; 
 LIST * cdList;
-
 char * PROGLOCATION;
-
 childArray * globalChildAr;
 
 //Gets the location of the actual program

@@ -89,4 +89,3 @@ void initializePathList(LIST ** pathlist, char * paths)
     free(PATHcopy);
 }
 
-//***************************************************
