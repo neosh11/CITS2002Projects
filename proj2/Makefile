@@ -1,8 +1,8 @@
 PROJECT = shell
-HEADER = myshell.h mystuff.h
-OBJ = execute.o globals.o myshell.o parser.o mystuff.o
+HEADER = myshell.h mystuff.h execute.h
+OBJ = execute.o globals.o myshell.o parser.o mystuff.o processArray.o arrayList.o
 
-C99 = cc -std=c99
+C99 = cc -std=gnu99
 FLAGS = -Wall -pedantic -Werror 
 
 $(PROJECT) : $(OBJ)

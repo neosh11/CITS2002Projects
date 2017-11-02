@@ -1,9 +1,8 @@
-#include "myshell.h"
-#include "mystuff.h"
+#include "execute.h"
 
 /*
  CITS2002 Project 2 2017
- Name(s):             student-name1 (, student-name2)
+ Name(s):             Neosh Sheikh, Cameron Wright
  Student number(s):   student-number-1 (, student-number-2)
  Date:                date-of-submission
  */
@@ -33,52 +32,21 @@ int main(int argc, char *argv[])
     {
         CDPATH = DEFAULT_CDPATH;
     }
-    
+
     //STORE ALL PATH VARIABLES IN A LIST
-    initializeList(&pathList);
-    
-    char *valuePath = malloc((strlen(PATH)+1)*sizeof(char));
-    char *PATHcopy = malloc((strlen(PATH)+1)*sizeof(char));
+    initializePathList(&pathList, PATH);
 
-    strcpy(PATHcopy, PATH);
-    valuePath = strtok(PATHcopy, ":");
-    
-    enqueue(&pathList, valuePath);
-    
-    while ((valuePath = strtok(NULL, ":")) != NULL)
-    {
-        enqueue(&pathList, valuePath);
-    }
-    free(valuePath);
-    free(PATHcopy);
-    
     //STORE ALL CDPATH VARIABLES IN A LIST
-    
-    initializeList(&cdList);
-    
-    valuePath = malloc((strlen(CDPATH)+1)*sizeof(char));
-    char *CDPATHcopy = malloc((strlen(CDPATH)+1)*sizeof(char));
+    initializePathList(&cdList, CDPATH);
 
-    strcpy(CDPATHcopy, CDPATH);
-    
-    //HERE
-    valuePath = strtok(CDPATHcopy, ":");
-    
-    enqueue(&cdList, valuePath);
-    
-    while ((valuePath = strtok(NULL, ":")) != NULL)
-    {
-        enqueue(&pathList, valuePath);
-    }
-    free(valuePath);
-    free(CDPATHcopy);
+    //Initialize global processId storage
+    initializeProcessArray(&globalChildAr);
 
-    
     //INITIALIZE SHELL
     int statusShell = shellInstance(argc, argv);
     
-    delete(&pathList);
-    
+    exitCommand(1);
+
     return statusShell;
 }
 
@@ -118,3 +86,6 @@ int shellInstance(int argc, char *argv[])
     }
     return exitstatus;
 }
+
+
+
