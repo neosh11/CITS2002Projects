@@ -1,12 +1,11 @@
 #include "myshell.h"
 
 /*
-   CITS2002 Project 2 2017
-   Name(s):             student-name1 (, student-name2)
-   Student number(s):   student-number-1 (, student-number-2)
-   Date:                date-of-submission
+ CITS2002 Project 2 2017
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
  */
-
 //  THREE INTERNAL VARIABLES (SEE myshell.h FOR EXPLANATION)
 char	*HOME, *PATH, *CDPATH;
 

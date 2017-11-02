@@ -16,6 +16,14 @@
 #include <signal.h>
 #include <sys/mman.h>
 
+/*
+ CITS2002 Project 2 2017
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
+ */
+
+#define MAXPROCESSES 1000
 
 //MACROS FOR DEBUGGING
 #define foreach(i,x,y) for(int i = x; i < y; i++)
@@ -41,7 +49,7 @@ extern char *locationOfProg(char * relative); //Gets location of the shell
 //__________________STRUCTURES__________________________________
 typedef struct processAr //Store for process ids in shared memory 
 {
-    int childrenArray[100];
+    int childrenArray[MAXPROCESSES];
     int childCount;
 } childArray;
 

@@ -2,11 +2,10 @@
 
 /*
  CITS2002 Project 2 2017
- Name(s):		student-name1 (, student-name2)
- Student number(s):	student-number-1 (, student-number-2)
- Date:		date-of-submission
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
  */
-
 // -------------------------------------------------------------------
 
 //Made global to get the exit status
@@ -571,8 +570,6 @@ void exitCommand(int i)
 
     for(int i = 0; i < globalChildAr->childCount; i++)
     {
-        printf("%d\n",globalChildAr->childrenArray[i]);
-
         kill(globalChildAr->childrenArray[i], SIGKILL);
     }
 

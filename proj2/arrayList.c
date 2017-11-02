@@ -1,5 +1,12 @@
 #include "mystuff.h"
 
+/*
+ CITS2002 Project 2 2017
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
+ */
+
 void initializeList(LIST **list)
 {
     *list = (LIST *)malloc(sizeof(LIST));

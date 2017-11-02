@@ -2,9 +2,9 @@
 
 /*
  CITS2002 Project 2 2017
- Name(s):             Neosh Sheikh, Cameron Wright
- Student number(s):   student-number-1 (, student-number-2)
- Date:                date-of-submission
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
  */
 
 int shellInstance(int argc, char *argv[]);
@@ -35,10 +35,8 @@ int main(int argc, char *argv[])
 
     //STORE ALL PATH VARIABLES IN A LIST
     initializePathList(&pathList, PATH);
-
     //STORE ALL CDPATH VARIABLES IN A LIST
     initializePathList(&cdList, CDPATH);
-
     //Initialize global processId storage
     initializeProcessArray(&globalChildAr);
 
@@ -71,12 +69,7 @@ int shellInstance(int argc, char *argv[])
         
         if (t != NULL)
         {
-            
-            //  WE COULD DISPLAY THE PARSED COMMAND-TREE, HERE, BY CALLING:
-            //print_shellcmd(t);
-            
-            exitstatus = execute_shellcmd(t);
-            
+            exitstatus = execute_shellcmd(t);   
             free_shellcmd(t);
         }
     }

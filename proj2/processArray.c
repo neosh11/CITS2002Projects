@@ -1,7 +1,11 @@
 #include "mystuff.h"
 
-
-
+/*
+ CITS2002 Project 2 2017
+ Names:             Neosh Sheikh, Cameron Wright
+ Student number(s):   21959462, 21958958
+ Date:                2/11/2017
+ */
 void initializeProcessArray(childArray ** x)
 {
     *x = mmap(NULL, sizeof(childArray *), PROT_READ | PROT_WRITE, 
