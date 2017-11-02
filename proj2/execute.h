@@ -56,7 +56,7 @@ extern int changeDirectory(char * dir);
 
 /**
  * Exits the shell, frees memory allocated and kills all children processes
- * using a SIGKILL
+ * using a SIGTERM (To give them enough time to finish)
  * */
 extern void exitCommand(int i);
 
@@ -64,3 +64,8 @@ extern void exitCommand(int i);
  * Signal handler which waits for the child process to free process table
  * */ 
 extern void killChild2(int sig);
+
+/**
+ * Called when program gets SIGTERM
+ * */
+extern void killSelf(int sig);

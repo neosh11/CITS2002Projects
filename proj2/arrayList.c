@@ -7,6 +7,10 @@
  Date:                2/11/2017
  */
 
+ /**
+  * functions for the arrayList object
+  * Read header for more details
+  */
 void initializeList(LIST **list)
 {
     *list = (LIST *)malloc(sizeof(LIST));
@@ -41,6 +45,7 @@ void enqueue(LIST **list, char * paths)
     }
 }
 
+//debugging only
 void display(LIST **list)
 {
     (*list)->temp = (*list)->front;
@@ -50,6 +55,8 @@ void display(LIST **list)
         (*list)->temp = (*list)->temp->ptr;
     }
 }
+
+//Deletes/frees list
 void delete (LIST **list)
 {
     while ((*list)->front != NULL)
@@ -64,10 +71,12 @@ void delete (LIST **list)
     free(*list);
 }
 
+//Resets the temp window back to front
 void resetHead(LIST **list)
 {
     (*list)->temp = (*list)->front;
 }
+//moves temp to the next node
 void next(LIST **list)
 {
     if ((*list)->temp != NULL)
@@ -76,6 +85,7 @@ void next(LIST **list)
     }
 }
 
+//Stores paths into the pathlist
 void initializePathList(LIST ** pathlist, char * paths)
 {
     initializeList(pathlist);

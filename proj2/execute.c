@@ -13,12 +13,12 @@ int gloablexitstatus = 0;
 
 //  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
 //  THAT IT HOLDS, RETURNING THE APPROPRIATE EXIT-STATUS.
-//  READ print_shellcmd0() IN globals.c TO SEE HOW TO TRAVERSE THE COMMAND-TREE
 
 int execute_shellcmd(SHELLCMD *t)
 {
     if (t == NULL)
-    { // hmmmm, that's a problem
+    { 
+        // hmmmm, that's a problem
         gloablexitstatus = EXIT_FAILURE;
     }
     else
@@ -257,7 +257,7 @@ int basicExecution(SHELLCMD *t)
     TIMEVAL endTime;
 
     bool showTime = false;
-
+    bool printedMessage = false;
     int cargc = t->argc;
     char **cargv = t->argv;
 
@@ -365,6 +365,7 @@ int basicExecution(SHELLCMD *t)
         status = basicCommands(t, showTime);
         if (status != EXIT_SUCCESS)
         {
+            printedMessage = true;
             fprintf(stderr, "\n%s: No such command\n\n", cargv[0]);
         }
     }
@@ -381,9 +382,8 @@ int basicExecution(SHELLCMD *t)
             switch (tempChildId)
             {
             case -1:
-
-                //TODO -check
-                break;
+            fprintf(stderr,"\nfailed to fork\n\n");
+            break;
             //failure
 
             case 0:
@@ -396,10 +396,12 @@ int basicExecution(SHELLCMD *t)
 
                         if (fin == -1)
                         {
-                            //error
+                            fprintf(stderr, "\nCould not open file %s\n\n", t->outfile);
                         }
-
-                        dup2(fin, 0);
+                        else
+                        {
+                            dup2(fin, 0);
+                        }
                         close(fin);
                     }
 
@@ -417,7 +419,7 @@ int basicExecution(SHELLCMD *t)
         }
     }
 
-    if (status != EXIT_SUCCESS)
+    if (status != EXIT_SUCCESS && !printedMessage)
     {
         fprintf(stderr, "\n%s: No such command\n\n", cargv[0]);
     }
@@ -431,6 +433,10 @@ int basicExecution(SHELLCMD *t)
 
     return status;
 }
+
+///   ATTEMPTS TO RUN A COMMAND WITH A PATH 
+///   E.G. IF THE PATH IS /bin AND THE COMMAND IS 
+///   cal, IT WILL ATTEMPT TO RUN /bin/cal
 
 int pathCommands(char *path, SHELLCMD *t, bool showTime)
 {
@@ -451,7 +457,7 @@ int pathCommands(char *path, SHELLCMD *t, bool showTime)
 
     case -1:
     {
-
+        fprintf(stderr,"\nfailed to fork\n\n");
         status = EXIT_FAILURE;
         break;
     }
@@ -491,6 +497,9 @@ int pathCommands(char *path, SHELLCMD *t, bool showTime)
     return status;
 }
 
+
+///   ATTEMPTS TO RUN A THE FILE SPECIFIED
+
 int basicCommands(SHELLCMD *t, bool showTime)
 {
 
@@ -511,7 +520,7 @@ int basicCommands(SHELLCMD *t, bool showTime)
 
     case -1:
     {
-        //TODOD
+        fprintf(stderr,"\nfailed to fork\n\n");
         status = EXIT_FAILURE;
         break;
     }
@@ -551,6 +560,7 @@ int basicCommands(SHELLCMD *t, bool showTime)
     return status;
 }
 
+///  CHANGES THE GIVEN DIRECTORY ITS DIR IF POSSIBLE
 int changeDirectory(char *dir)
 {
     int status;
@@ -565,12 +575,13 @@ int changeDirectory(char *dir)
     return status;
 }
 
+///   TERMINATES ALL THE CHILDREN
 void exitCommand(int i)
 {
 
     for(int i = 0; i < globalChildAr->childCount; i++)
     {
-        kill(globalChildAr->childrenArray[i], SIGKILL);
+        kill(globalChildAr->childrenArray[i], SIGTERM);
     }
 
     delete(&pathList);
@@ -580,10 +591,17 @@ void exitCommand(int i)
     exit(i);
 }
 
-
+///   WAITS FOR THE CHILD TO CLEAR SPACE IN THE PROCESS TABLE
 void killChild2(int sig)
 {
     int x = wait(NULL);
     removeFromArray(&globalChildAr, x);
 }
+
+/// HANDLER WHEN THIS PROGRAM IS SENT SIGTERM
+void killSelf(int sig)
+{
+    exitCommand(gloablexitstatus);
+}
+
 

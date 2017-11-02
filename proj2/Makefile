@@ -7,7 +7,7 @@ PROJECT = myshell
 HEADER = myshell.h mystuff.h execute.h
 OBJ = execute.o globals.o myshell.o parser.o mystuff.o processArray.o arrayList.o
 
-C99 = cc -std=cc99
+C99 = cc -std=c99
 FLAGS = -Wall -pedantic -Werror 
 
 $(PROJECT) : $(OBJ)

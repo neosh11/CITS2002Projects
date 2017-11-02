@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
     //Initialize global processId storage
     initializeProcessArray(&globalChildAr);
 
+    //Set-up exit commands (INCASE EXTERNALLY KILLED)
+    signal(SIGTERM, killSelf);
     //INITIALIZE SHELL
     int statusShell = shellInstance(argc, argv);
     
