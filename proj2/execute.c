@@ -11,14 +11,15 @@
 //Made global to get the exit status
 int gloablexitstatus = 0;
 
-//  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
-//  THAT IT HOLDS, RETURNING THE APPROPRIATE EXIT-STATUS.
-//  READ print_shellcmd0() IN globals.c TO SEE HOW TO TRAVERSE THE COMMAND-TREE
+///  THIS FUNCTION SHOULD TRAVERSE THE COMMAND-TREE and EXECUTE THE COMMANDS
+///  THAT IT HOLDS, RETURNING THE APPROPRIATE EXIT-STATUS.
+///  READ print_shellcmd0() IN globals.c TO SEE HOW TO TRAVERSE THE COMMAND-TREE
 
 int execute_shellcmd(SHELLCMD *t)
 {
     if (t == NULL)
-    { // hmmmm, that's a problem
+    { 
+        //error
         gloablexitstatus = EXIT_FAILURE;
     }
     else
@@ -28,6 +29,17 @@ int execute_shellcmd(SHELLCMD *t)
     return gloablexitstatus;
 }
 
+///  THIS FUNCTION TRAVERSES THE COMMAND TREE AND ACTS 
+///  APPROPRIATELY DEPENDING ON THE NODE IT IS ON
+///  IT IS RESPONSIBLE FOR:
+///  1)INPUT/OUTPUT REDIRECTION
+///  2)EXECUTING COMMANDS (COMMAND NODES)
+///  3)SEMICOLON EXECUTION      E.G. cmd1 ; cmd2
+///  4)AND EXECUTION            E.G. cmd1 && cmd2
+///  5)OR EXECTUION             E.G. cmd1 || cmd2
+///  6)SUBSHELL EXECUTION       E.G. (cmds)
+///  7)PIPE EXECTUION           E.G. cmd1 | cmd2
+///  8)BACKGROUND EXECUTION     E.G. cmd1 & cmd2
 
 int categoryExecute(SHELLCMD *t)
 {
@@ -196,7 +208,7 @@ int categoryExecute(SHELLCMD *t)
             dup2(saved_stdin, STDIN_FILENO);
         }
 
-        //TODO WHEN EXIT IS CALLED TERMINATE ALL PROCESSES
+        
         else if (typeCmd == CMD_BACKGROUND) //EXEC IN BG
         {
             int tempChildId = fork();
@@ -228,7 +240,7 @@ int categoryExecute(SHELLCMD *t)
         }
         else
         {
-            //UH OH SOMETHING IS WRONG
+            //ERROR SOMETHING IS WRONG
             status = EXIT_FAILURE;
         }
     }
@@ -281,7 +293,7 @@ int basicExecution(SHELLCMD *t)
         status = gloablexitstatus;
     }
 
-    //TODO: UPDATE, IF DOESN'T COMMENCE WITH / CONSIDER CDPATH
+    
     if (strcmp(cargv[0], "cd") == 0)
     {
         if (cargc > 1)
@@ -336,7 +348,7 @@ int basicExecution(SHELLCMD *t)
     }
 
     //CHECK IF IT DOES NOT CONTAIN A '/'
-    //IF NOT, EXECUTE PATH COMMANDS i.e. execute from path if possible
+    //IF NOT, EXECUTE PATH COMMANDS I.E. EXECUTE FROM THE PATH IF POSSIBLE
     else if (strchr(cargv[0], '/') == NULL)
     {
 
@@ -381,11 +393,10 @@ int basicExecution(SHELLCMD *t)
             switch (tempChildId)
             {
             case -1:
-
-                //TODO -check
+                //failure
+                fprintf(stderr,"\nfailed to fork\n\n");
                 break;
-            //failure
-
+            
             case 0:
                 //new copy of myshell
                 //reads from a dup2 (file)
@@ -396,7 +407,7 @@ int basicExecution(SHELLCMD *t)
 
                         if (fin == -1)
                         {
-                            //error
+                            fprintf(stderr, "\nCould not open/create file %s\n\n", t->outfile);
                         }
 
                         dup2(fin, 0);
@@ -406,7 +417,7 @@ int basicExecution(SHELLCMD *t)
                     execv(PROGLOCATION, (char *[]){"./myshell", NULL});
                 }
                 break;
-            //stuff
+            
 
             default:
                 addToArray(&globalChildAr, tempChildId);
@@ -432,6 +443,8 @@ int basicExecution(SHELLCMD *t)
     return status;
 }
 
+///   
+
 int pathCommands(char *path, SHELLCMD *t, bool showTime)
 {
 
@@ -451,7 +464,7 @@ int pathCommands(char *path, SHELLCMD *t, bool showTime)
 
     case -1:
     {
-
+        //failure
         status = EXIT_FAILURE;
         break;
     }
@@ -491,6 +504,11 @@ int pathCommands(char *path, SHELLCMD *t, bool showTime)
     return status;
 }
 
+
+///   ATTEMPTS TO RUN A COMMAND WITH A PATH 
+///   E.G. IF THE PATH IS /bin AND THE COMMAND IS 
+///   cal, IT WILL ATTEMPT TO RUN /bin/cal
+
 int basicCommands(SHELLCMD *t, bool showTime)
 {
 
@@ -511,7 +529,8 @@ int basicCommands(SHELLCMD *t, bool showTime)
 
     case -1:
     {
-        //TODOD
+        //failure
+        fprintf(stderr,"\nfailed to fork\n\n");
         status = EXIT_FAILURE;
         break;
     }
@@ -551,6 +570,8 @@ int basicCommands(SHELLCMD *t, bool showTime)
     return status;
 }
 
+///  CHANGES THE GIVEN DIRECTORY ITS CHILD DIRECTORY IF IT HAS ONE
+
 int changeDirectory(char *dir)
 {
     int status;
@@ -564,6 +585,8 @@ int changeDirectory(char *dir)
     }
     return status;
 }
+
+///   KILLS ALL THE CHILDREN
 
 void exitCommand(int i)
 {
@@ -580,10 +603,10 @@ void exitCommand(int i)
     exit(i);
 }
 
+///   KILLS THE GIVEN CHILD
 
 void killChild2(int sig)
 {
     int x = wait(NULL);
     removeFromArray(&globalChildAr, x);
 }
-

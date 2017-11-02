@@ -6,6 +6,9 @@
  Student number(s):   21959462, 21958958
  Date:                2/11/2017
  */
+
+///   THIS IS A VECTOR THAT STORES THE PROCESS IDS OF THE CHILDREN
+
 void initializeProcessArray(childArray ** x)
 {
     *x = mmap(NULL, sizeof(childArray *), PROT_READ | PROT_WRITE, 

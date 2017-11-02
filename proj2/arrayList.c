@@ -7,6 +7,8 @@
  Date:                2/11/2017
  */
 
+/// ARRAY LIST IMPLEMENTATION 
+
 void initializeList(LIST **list)
 {
     *list = (LIST *)malloc(sizeof(LIST));
@@ -14,7 +16,6 @@ void initializeList(LIST **list)
     (*list)->end = (NODE **)malloc(sizeof(NODE *));
 }
 
-//enques a node on to the list
 void enqueue(LIST **list, char * paths)
 {
     
@@ -41,6 +42,8 @@ void enqueue(LIST **list, char * paths)
     }
 }
 
+/// PRINTS THE LIST
+
 void display(LIST **list)
 {
     (*list)->temp = (*list)->front;
@@ -50,6 +53,7 @@ void display(LIST **list)
         (*list)->temp = (*list)->temp->ptr;
     }
 }
+
 void delete (LIST **list)
 {
     while ((*list)->front != NULL)
@@ -95,4 +99,3 @@ void initializePathList(LIST ** pathlist, char * paths)
     free(valuePath);
     free(PATHcopy);
 }
-
