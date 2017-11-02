@@ -3,11 +3,11 @@
  #Student number(s):   21959462, 21958958
  #Date:                2/11/2017
  
-PROJECT = shell
+PROJECT = myshell
 HEADER = myshell.h mystuff.h execute.h
 OBJ = execute.o globals.o myshell.o parser.o mystuff.o processArray.o arrayList.o
 
-C99 = cc -std=c99
+C99 = cc -std=cc99
 FLAGS = -Wall -pedantic -Werror 
 
 $(PROJECT) : $(OBJ)

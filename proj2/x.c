@@ -17,9 +17,8 @@ int main() {
 
     int pid = fork();
 
-    printf("%s", line);
     if (pid == 0) {
-      fclose(input);
+      printf("%s", line);
       exit(0);
     } else {
       waitpid(pid, &x, 0);

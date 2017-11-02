@@ -403,7 +403,7 @@ int basicExecution(SHELLCMD *t)
                         close(fin);
                     }
 
-                    execv(PROGLOCATION, (char *[]){"./shell", NULL});
+                    execv(PROGLOCATION, (char *[]){"./myshell", NULL});
                 }
                 break;
             //stuff
